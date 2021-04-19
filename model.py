@@ -14,3 +14,13 @@ class VanillaNetwork(nn.Module):
             nn.ReLU(),
             nn.Linear(32, 1)
         )
+
+    def forward(self, x):
+        return self.linear_relu_stack(x)
+
+
+if __name__ == '__main__':
+    model = VanillaNetwork()
+    print("Model structure: ", model, "\n\n")
+    for name, param in model.named_parameters():
+        print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
