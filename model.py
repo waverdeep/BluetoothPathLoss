@@ -7,13 +7,13 @@ class VanillaNetwork(nn.Module):
         super(VanillaNetwork, self).__init__()
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(input_size, 64),
-            nn.ReLU(),
+            nn.PReLU(),
             nn.Linear(64, 64),
             nn.Dropout(0.3),
-            nn.ReLU(),
+            nn.PReLU(),
             nn.Linear(64, 32),
             nn.Dropout(0.3),
-            nn.ReLU(),
+            nn.PReLU(),
             nn.Linear(32, 1)
         )
 

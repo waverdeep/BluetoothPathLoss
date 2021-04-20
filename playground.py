@@ -5,6 +5,7 @@ import data_loader
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
+from sklearn.metrics import mean_absolute_error
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 import tensorflow as tf
@@ -13,7 +14,7 @@ tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
 
 
 def set_tensorboard_writer(name):
-    writer = SummaryWriter(name) # 'runs/model01-vanilla'
+    writer = SummaryWriter(name) # 'runs/model01-vanilla-l1loss-mae'
     return writer
 
 
@@ -41,6 +42,7 @@ model = model.VanillaNetwork(input_size).cuda()
 
 # loss and optimizer
 criterion = nn.MSELoss().cuda() # cross entropy loss
+criterion = nn.L1Loss().cuda()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 
@@ -49,7 +51,7 @@ def close_tensorboard_writer(writer):
 
 
 # setup tensorboard
-writer = set_tensorboard_writer('runs/model01-vanilla')
+writer = set_tensorboard_writer('runs/model01-vanilla4-l1loss-mae')
 
 
 # train
@@ -96,10 +98,23 @@ for epoch in range(num_epochs):
                 # plt.scatter(pred, rssi, c='y')
                 # plt.show()
 
+            test_mse_score = mean_squared_error(total_label, total_pred)
+            test_r2_score = r2_score(total_label, total_pred)
+            test_mae_score = mean_absolute_error(total_label, total_pred)
+            writer.add_scalar('MSE Score',
+                              test_mse_score,
+                              epoch)
+            writer.add_scalar('R2 Score',
+                              test_r2_score,
+                              epoch)
+            writer.add_scalar('MAE Score',
+                              test_mae_score,
+                              epoch)
 
 
-            print("MSE Score : {}".format(mean_squared_error(total_label, total_pred))) # 평균제곱 오차가음 낮을수록 좋음
-            print("R2 Score : {}".format(r2_score(total_label, total_pred)))
+            print("MSE Score : {}".format(test_mse_score)) # 평균제곱 오차가음 낮을수록 좋음
+            print("R2 Score : {}".format(test_r2_score))
+            print("MAE Score : {}".format(test_mae_score))
 
 
 
