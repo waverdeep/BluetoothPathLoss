@@ -6,6 +6,19 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 import numpy as np
+from torch.utils.tensorboard import SummaryWriter
+import tensorflow as tf
+import tensorboard as tb
+tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
+
+
+def set_tensorboard_writer(name):
+    writer = SummaryWriter(name) # 'runs/model01-vanilla'
+    return writer
+
+
+def close_tensorboard_writer(writer):
+    writer.close()
 
 
 # setup parameters
@@ -30,6 +43,15 @@ model = model.VanillaNetwork(input_size).cuda()
 criterion = nn.MSELoss().cuda() # cross entropy loss
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
+
+def close_tensorboard_writer(writer):
+    writer.close()
+
+
+# setup tensorboard
+writer = set_tensorboard_writer('runs/model01-vanilla')
+
+
 # train
 for epoch in range(num_epochs):
     for i, data in enumerate(train_dataloader):
@@ -42,6 +64,11 @@ for epoch in range(num_epochs):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+
+        # ...학습 중 손실(running loss)을 기록하고
+        writer.add_scalar('training loss',
+                          loss / 1000,
+                          epoch * len(train_dataloader) + i)
 
         if (epoch+1) % 5 == 0:
             print('Epoch [{}/{}], Loss: {:.4f}'.format(epoch + 1, num_epochs, loss.item()))
@@ -69,5 +96,12 @@ for epoch in range(num_epochs):
                 # plt.scatter(pred, rssi, c='y')
                 # plt.show()
 
+
+
             print("MSE Score : {}".format(mean_squared_error(total_label, total_pred))) # 평균제곱 오차가음 낮을수록 좋음
             print("R2 Score : {}".format(r2_score(total_label, total_pred)))
+
+
+
+
+close_tensorboard_writer(writer)
