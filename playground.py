@@ -14,7 +14,7 @@ tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
 
 
 def set_tensorboard_writer(name):
-    writer = SummaryWriter(name) # 'runs/model01-vanilla-l1loss-mae'
+    writer = SummaryWriter(name)
     return writer
 
 
@@ -22,10 +22,28 @@ def close_tensorboard_writer(writer):
     writer.close()
 
 
+def close_tensorboard_writer(writer):
+    writer.close()
+
+
+def MAPE(y_data, pred):
+    y_data = np.array(y_data)
+    pred = np.array(pred)
+
+    return np.mean(np.abs((y_data-pred)/y_data))*100
+
+
+def MPE(y_data, pred):
+    y_data = np.array(y_data)
+    pred = np.array(pred)
+
+    return np.mean((y_data-pred)/y_data)*100
+
+
 # setup parameters
 input_size = 8
-num_epochs = 800
-learning_rate = 0.0001
+num_epochs = 500
+learning_rate = 0.01
 batch_size = 1024
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 train_data_dir = 'dataset/pathloss_v1_train_ev.csv'
@@ -42,16 +60,18 @@ model = model.VanillaNetwork(input_size).cuda()
 
 # loss and optimizer
 criterion = nn.MSELoss().cuda() # cross entropy loss
-criterion = nn.L1Loss().cuda()
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+# criterion = nn.L1Loss().cuda()
+# optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-
-def close_tensorboard_writer(writer):
-    writer.close()
+# learning rate scheduler setting
+scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=optimizer,
+                                              lr_lambda=lambda epoch_l: 0.95**epoch_l,
+                                              last_epoch=-1)
 
 
 # setup tensorboard
-writer = set_tensorboard_writer('runs/model01-vanilla4-l1loss-mae')
+writer = set_tensorboard_writer('runs/model01-vanilla-mseloss-adam-sch-prelu-test01')
 
 
 # train
@@ -66,9 +86,10 @@ for epoch in range(num_epochs):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        scheduler.step()
 
         # ...학습 중 손실(running loss)을 기록하고
-        writer.add_scalar('training loss',
+        writer.add_scalar('mseloss training loss',
                           loss / 1000,
                           epoch * len(train_dataloader) + i)
 
@@ -101,6 +122,8 @@ for epoch in range(num_epochs):
             test_mse_score = mean_squared_error(total_label, total_pred)
             test_r2_score = r2_score(total_label, total_pred)
             test_mae_score = mean_absolute_error(total_label, total_pred)
+            test_rmse_score = np.sqrt(test_mse_score)
+
             writer.add_scalar('MSE Score',
                               test_mse_score,
                               epoch)
@@ -109,6 +132,9 @@ for epoch in range(num_epochs):
                               epoch)
             writer.add_scalar('MAE Score',
                               test_mae_score,
+                              epoch)
+            writer.add_scalar('RMSE Score',
+                              test_rmse_score,
                               epoch)
 
 
