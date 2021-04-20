@@ -8,13 +8,13 @@ class VanillaNetwork(nn.Module):
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(input_size, 64),
             nn.PReLU(),
-            nn.Linear(64, 64),
+            nn.Linear(64, 128),
             nn.Dropout(0.3),
             nn.PReLU(),
-            nn.Linear(64, 32),
+            nn.Linear(128, 64),
             nn.Dropout(0.3),
             nn.PReLU(),
-            nn.Linear(32, 1)
+            nn.Linear(64, 1)
         )
 
     def forward(self, x):
