@@ -39,10 +39,9 @@ class VanillaLSTMNetwork(nn.Module):
         output, _ = self.lstm01(x)
         return self.linear_relu_stack(output[:, -1, :])
 
+
 if __name__ == '__main__':
-
     kind = 'RNN'
-
     if kind == 'ANN':
         model = VanillaNetwork()
     elif kind == 'RNN':
