@@ -14,3 +14,8 @@ regression 형태로 문제를 해결하고 있음
 - RX_ANTENNA_GAIN : Rx안테나 게인
 - FSPL : Free Space Path Loss 계산 값 
 - environment : 환경 변수 (장애물, 날씨 등을 뜻함)
+
+
+## 사용한 모델
+- ANN : Fully Connected Layer 4계층으로 이루어진 모델 (Dropout layer 존재, Activiation Function은 PReLU 사용)
+- LSTM : Recurrent 한 모델을 적용해보기위해 LSTM 사용 (many to one의 형태로 구현)
