@@ -1,11 +1,13 @@
 import torch
 import pandas as pd
 from torch.utils.data import DataLoader, Dataset
+from sklearn.preprocessing import RobustScaler
+from sklearn.preprocessing import StandardScaler
 
 
 class PathLossDataset(Dataset):
-    def __init__(self, input_dir):
-        self.dataset = pd.read_csv(input_dir)
+    def __init__(self, input_dir, scaler='None'):
+        self.dataset = pd.read_csv(input_dir, header=None)
 
     def __len__(self):
         return len(self.dataset)
@@ -16,6 +18,7 @@ class PathLossDataset(Dataset):
         del line[0]
         y_data = line[0]
         del line[0]
+
         x_data = line
         x_data = torch.tensor(x_data, dtype=torch.float)
         y_data = torch.tensor(y_data, dtype=torch.float)
@@ -66,15 +69,15 @@ class PathLossTimeSeriesDataset(Dataset):
             for j in range(0, (div_len-sequence_length)):
                 dataset.append(div[j:j+sequence_length])
 
+
+
         return dataset
 
 
-
-
-
-
-def load_pathloss_dataset(input_dir, batch_size, shuffle, num_workers):
-    pathloss_dataset = PathLossDataset(input_dir=input_dir)
-    pathloss_dataloader = DataLoader(pathloss_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
-    return pathloss_dataloader
-
+def load_pathloss_dataset(input_dir, batch_size, shuffle, num_workers, type='ANN'):
+    if type == 'ANN':
+        pathloss_dataset = PathLossDataset(input_dir=input_dir, scaler='robust')
+        pathloss_dataloader = DataLoader(pathloss_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
+        return pathloss_dataloader
+    elif type == 'RNN':
+        pass
