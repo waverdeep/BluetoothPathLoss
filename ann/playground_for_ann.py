@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 import model
-import data_loader
-import matplotlib.pyplot as plt
+from data import data_loader
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
@@ -26,34 +25,18 @@ def close_tensorboard_writer(writer):
     writer.close()
 
 
-def MAPE(y_data, pred):
-    y_data = np.array(y_data)
-    pred = np.array(pred)
-
-    return np.mean(np.abs((y_data-pred)/y_data))*100
-
-
-def MPE(y_data, pred):
-    y_data = np.array(y_data)
-    pred = np.array(pred)
-
-    return np.mean((y_data-pred)/y_data)*100
-
-
 # setup parameters
 input_size = 8
-num_epochs = 500
-learning_rate = 0.01
+num_epochs = 800
+learning_rate = 1
 batch_size = 1024
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-train_data_dir = 'dataset/pathloss_v1_train_ev.csv'
-test_data_dir = 'dataset/pathloss_v1_test_ev.csv'
-valid_data_dir = 'dataset/pathloss_v1_valid_ev.csv'
+train_data_dir = 'dataset/pathloss_v1_train_cs.csv'
+test_data_dir = 'dataset/pathloss_v1_test_cs.csv'
 
 # load dataset
 train_dataloader = data_loader.load_pathloss_dataset(train_data_dir, batch_size, True, 4)
 test_dataloader = data_loader.load_pathloss_dataset(test_data_dir, batch_size, True, 4)
-valid_dataloader = data_loader.load_pathloss_dataset(valid_data_dir, batch_size, True, 4)
 
 # load model
 model = model.VanillaNetwork(input_size).cuda()
@@ -62,16 +45,18 @@ model = model.VanillaNetwork(input_size).cuda()
 criterion = nn.MSELoss().cuda() # cross entropy loss
 # criterion = nn.L1Loss().cuda()
 # optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+# optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+# optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+optimizer = torch.optim.Adadelta(model.parameters(), lr=learning_rate)
 
 # learning rate scheduler setting
-scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=optimizer,
-                                              lr_lambda=lambda epoch_l: 0.95**epoch_l,
-                                              last_epoch=-1)
+# scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=optimizer,
+#                                               lr_lambda=lambda epoch_l: epoch_l//30,
+#                                               last_epoch=-1)
 
 
 # setup tensorboard
-writer = set_tensorboard_writer('runs/model01-vanilla-mseloss-adam-sch-prelu-test01')
+writer = set_tensorboard_writer('runs/model01-vanilla-mseloss-adadelta-lr1-prelu-test01-sscaler')
 
 
 # train
@@ -86,7 +71,7 @@ for epoch in range(num_epochs):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        scheduler.step()
+        # scheduler.step()
 
         # ...학습 중 손실(running loss)을 기록하고
         writer.add_scalar('mseloss training loss',
@@ -95,6 +80,11 @@ for epoch in range(num_epochs):
 
         if (epoch+1) % 5 == 0:
             print('Epoch [{}/{}], Loss: {:.4f}'.format(epoch + 1, num_epochs, loss.item()))
+
+    torch.save({epoch: epoch,
+                'model': model,
+                'model_state_dict': model.state_dict()},
+               "checkpoints/model_adadelta_mse_epoch_{}.pt".format(epoch))
 
     if (epoch+1) % 10 == 0:
         with torch.no_grad():
@@ -114,11 +104,6 @@ for epoch in range(num_epochs):
                 total_label += y_data.tolist()
                 total_pred += pred.tolist()
 
-                # plt.title("epoch : {}".format(epoch+1))
-                # plt.scatter(y_data, rssi, c='b')
-                # plt.scatter(pred, rssi, c='y')
-                # plt.show()
-
             test_mse_score = mean_squared_error(total_label, total_pred)
             test_r2_score = r2_score(total_label, total_pred)
             test_mae_score = mean_absolute_error(total_label, total_pred)
@@ -137,12 +122,8 @@ for epoch in range(num_epochs):
                               test_rmse_score,
                               epoch)
 
-
             print("MSE Score : {}".format(test_mse_score)) # 평균제곱 오차가음 낮을수록 좋음
             print("R2 Score : {}".format(test_r2_score))
             print("MAE Score : {}".format(test_mae_score))
-
-
-
 
 close_tensorboard_writer(writer)
