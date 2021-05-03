@@ -1,7 +1,7 @@
 import torch
 from data import data_loader
 import model
-from tools import metrics
+from tool import metrics
 
 # parameters
 input_size = 8
