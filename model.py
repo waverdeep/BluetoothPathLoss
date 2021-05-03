@@ -24,9 +24,9 @@ class VanillaNetwork(nn.Module):
         return self.linear_relu_stack(x)
 
 
-class VanillaLSTMNetwork(nn.Module):
+class VanillaRecurrentNetwork(nn.Module):
     def __init__(self, input_size=2, recurrent_model='LSTM', activation='PReLU'):
-        super(VanillaLSTMNetwork, self).__init__()
+        super(VanillaRecurrentNetwork, self).__init__()
         self.activation = activation
         self.hidden_size = 128
         self.num_layers = 2
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     if kind == 'ANN':
         model = VanillaNetwork()
     elif kind == 'RNN':
-        model = VanillaLSTMNetwork()
+        model = VanillaRecurrentNetwork()
     print("Model structure: ", model, "\n\n")
     # for name, param in model.named_parameters():
     #     print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
