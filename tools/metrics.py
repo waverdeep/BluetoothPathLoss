@@ -3,6 +3,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
 from frechetdist import frdist
+import matplotlib.pyplot as plt
 
 
 def mean_absolute_percentage_error(y_data, pred):
@@ -41,6 +42,36 @@ def frechet_distance(rssi, y_data, pred):
 
     frechet_result = frdist(reshape_y_data, reshape_pred)
     return frechet_result
+
+
+def plot_rssi_to_distance(ref_rssi, y_data, pred):
+    plt.figure(figsize=(10, 10))
+    plt.title('Validation RSSI to Distance', fontsize=20)
+    plt.ylabel('Distance (meter)', fontsize=18)
+    plt.xlabel('RSSI (dBm)', fontsize=18)
+    plt.scatter(ref_rssi, y_data, c='b', label="groundtruth")
+    plt.scatter(ref_rssi, pred, c='r', label="prediction")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
+def show_all_metrics_result(rssi, y_data, pred):
+    mse_result = mean_squared_error(y_data, pred)
+    rmse_result = np.sqrt(mse_result)
+    r2_result = r2_score(y_data, pred)
+    mae_result = mean_absolute_error(y_data, pred)
+    max_error_result = max_error_distance(y_data, pred)
+    min_error_result = min_error_distance(y_data, pred)
+    frechet_result = frechet_distance(rssi, y_data, pred)
+
+    print('MSE : {}'.format(mse_result))
+    print('RMSE : {}'.format(rmse_result))
+    print('R2 Score : {}'.format(r2_result))
+    print('MAE : {}'.format(mae_result))
+    print('MAX_ERROR_DISTANCE : {}'.format(max_error_result))
+    print('MIN_ERROR_DISTANCE : {}'.format(min_error_result))
+    print('FRECHET_DISTANCE : {}'.format(frechet_result))
 
 
 

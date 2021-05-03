@@ -1,7 +1,7 @@
 import torch
 from data import data_loader
 import model
-import tools
+from tools import metrics
 
 # parameters
 input_size = 8
@@ -39,9 +39,9 @@ with torch.no_grad():
         total_label += y_data.tolist()
         total_pred += pred.tolist()
 
-        tools.plot_rssi_to_distance(rssi, y_data, pred)
+        metrics.plot_rssi_to_distance(rssi, y_data, pred)
         print('<<iter metric result>>')
-        tools.show_all_metrics_result(rssi.tolist(), y_data.tolist(), pred.tolist())
+        metrics.show_all_metrics_result(rssi.tolist(), y_data.tolist(), pred.tolist())
 
     print('<<total metric result>>')
-    tools.show_all_metrics_result(total_rssi, total_label, total_pred)
+    metrics.show_all_metrics_result(total_rssi, total_label, total_pred)

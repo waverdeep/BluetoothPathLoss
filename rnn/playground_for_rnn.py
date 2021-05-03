@@ -52,7 +52,7 @@ model = model.VanillaLSTMNetwork(input_size=input_sequence).cuda()
 criterion = nn.MSELoss().cuda()
 optimizer = torch.optim.Adadelta(model.parameters(), lr=learning_rate)
 
-writer = set_tensorboard_writer('../runs_rnn/model01-vanilla-sample01')
+writer = set_tensorboard_writer('../runs_rnn/model01-vanilla-sample12')
 
 for epoch in range(num_epochs):
     for i, data in enumerate(train_dataloader):

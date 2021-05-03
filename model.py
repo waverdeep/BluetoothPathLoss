@@ -32,8 +32,8 @@ class VanillaLSTMNetwork(nn.Module):
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(self.hidden_size, 64),
             nn.Dropout(0.3),
-            nn.ReLU(),
-            nn.Linear(64, 1)
+            nn.PReLU(),
+            nn.Linear(64, 1),
         )
 
     def forward(self, x):

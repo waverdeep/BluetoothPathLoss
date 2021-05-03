@@ -10,8 +10,8 @@ from torch import nn
 # creating the dataset
 x = np.arange(1, 721, 1)
 y = np.sin(x*np.pi/180)+np.random.randn(720)*0.05
-# plt.plot(y)
-# plt.show()
+plt.plot(y)
+plt.show()
 
 # structuring the data
 X = []
@@ -75,6 +75,7 @@ epochs = 5500
 # training loop
 for i in range(epochs):
     for j, data in enumerate(train_loader):
+        print(data[:][0])
         y_pred = model(data[:][0].view(-1, 10, 1)).reshape(-1)
         loss = criterion(y_pred, data[:][1])
         loss.backward()
