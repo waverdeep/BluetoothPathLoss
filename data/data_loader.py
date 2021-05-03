@@ -9,6 +9,7 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 from sklearn.externals import joblib
+from sklearn.model_selection import train_test_split
 
 
 def set_scaler(name):
@@ -20,6 +21,22 @@ def set_scaler(name):
         return StandardScaler()
 
 
+def fit_selected_scaler(addition_dataset, scaler='None'):
+    tied_scaler = None
+    if scaler != 'None' and scaler == 'MinMaxScaler':
+        temp = []
+        tied_scaler = set_scaler(scaler)
+        for pack in addition_dataset:
+            for line in pack:
+                temp.append(line)
+        temp = np.array(temp)
+        temp = np.delete(temp, 0, axis=1)
+        tied_scaler.fit(temp)
+    save_scaler_name = './{}_saved.pkl'.format(scaler)
+    joblib.dump(tied_scaler, save_scaler_name)
+    return tied_scaler
+
+
 def get_all_file_path(input_dir, file_extension):
     temp = glob.glob(os.path.join(input_dir, '**', '*.{}'.format(file_extension)), recursive=True)
     return temp
@@ -29,26 +46,113 @@ class PathLossWithDetailDataset(Dataset):
     def __init__(self, input_data, scaler='None', model_type='FFNN'):
         self.scaler = scaler
         self.model_type = model_type
-        self.dataset = []
-
-        if self.model_type == 'FFNN':
-            for pack in input_data:
-                for line in pack:
-                    self.dataset.append(line)
-            self.dataset = np.array(self.dataset)
+        self.dataset = input_data
 
     def __len__(self):
         return len(self.dataset)
 
     def __getitem__(self, idx):
         pick = self.dataset[idx]
-        y_label = pick[0]
-        x_data = pick[1:]
-        x_data = self.scaler.transform(x_data)
-        return x_data, y_label
+        if self.model_type == 'FFNN':
+            y_label = pick[0]
+            x_data = pick[1:]
+            x_data = self.scaler.transform(x_data)
+            return torch.Tensor(x_data, dtype=torch.float), torch.Tensor(y_label, dtype=torch.float)
+
+
+def load_path_loss_with_detail_dataset(input_dir, device_id, data_environment, model_type='RNN', scaler='None', use_fspl=False, use_r2d=False,
+                                       num_workers=4, batch_size=62, shuffle=True):
+    # 파일들이 저장되었는 경로를 받아 파일 리스트를 얻어냄
+    file_list = get_all_file_path(input_dir, file_extension='csv')
+    target_dataset = []
+    addition_dataset = []
+
+    for file in file_list:
+        temp = pd.read_csv(file)
+        temp = temp[temp['mac'] == device_id]
+        temp = temp.drop(['mac', 'type'], axis=1)
+        target_dataset.append(temp)
+
+    for item in target_dataset:
+        temp = []
+        # meter, rssi, tx_power, tx_height, rx_height, tx_antenna_gain, rx_antenna_gain, environment, FSPL,
+        for idx, line in item.iterrows():
+            data = line.tolist()
+            data.append(data_environment.get('tx_power'))
+            data.append(data_environment.get('tx_height'))
+            data.append(data_environment.get('rx_height'))
+            data.append(data_environment.get('tx_antenna_gain'))
+            data.append(data_environment.get('rx_antenna_gain'))
+            data.append(data_environment.get('environment'))
+            if use_fspl:
+                data.append(path_loss.get_distance_with_rssi_fspl(data[1]))
+            temp.append(data)
+        addition_dataset.append(temp)
+
+    tied_scaler = fit_selected_scaler(addition_dataset=addition_dataset, scaler=scaler)
+
+    if model_type == 'FFNN':
+        ffnn_dataset = []
+        for pack in addition_dataset:
+            for line in pack:
+                ffnn_dataset.append(line)
+        train_data, test_data = train_test_split(ffnn_dataset, test_size=0.3, shuffle=True, random_state=42)
+        test_data, valid_data = train_test_split(test_data, test_size=0.5, shuffle=True, random_state=42)
+        pathloss_train_dataset = PathLossWithDetailDataset(input_data=train_data, scaler=tied_scaler,
+                                                           model_type=model_type)
+        pathloss_test_dataset = PathLossWithDetailDataset(input_data=test_data, scaler=tied_scaler,
+                                                          model_type=model_type)
+        pathloss_valid_dataset = PathLossWithDetailDataset(input_data=valid_data, scaler=tied_scaler,
+                                                           model_type=model_type)
+        pathloss_train_dataloader = DataLoader(pathloss_train_dataset, batch_size=batch_size, shuffle=shuffle,
+                                               num_workers=num_workers)
+        pathloss_test_dataloader = DataLoader(pathloss_test_dataset, batch_size=batch_size, shuffle=shuffle,
+                                              num_workers=num_workers)
+        pathloss_valid_dataloader = DataLoader(pathloss_valid_dataset, batch_size=batch_size, shuffle=shuffle,
+                                               num_workers=num_workers)
+        return pathloss_train_dataloader, pathloss_test_dataloader, pathloss_valid_dataloader
+
+    elif model_type == 'RNN':
+        pass
+
+
+# board : f8:8a:5e:2d:80:f4
+# custom : 04:ee:03:74:ae:dd
+# environment
+# - grass : 1
+# - block : 2
+# weather 에 대한 상태가 들어가면 좋을지를 고민해 보아야 한다. 혹은 기온이라더지 등
+if __name__ == '__main__':
+    data_environment = {'tx_power': 5, 'tx_height': 2, 'rx_height': 0.01, 'tx_antenna_gain': -1.47,
+                        'rx_antenna_gain': -1, 'environment': 1}
+    load_path_loss_with_detail_dataset('../dataset/v1_timeline', device_id='f8:8a:5e:2d:80:f4', data_environment=data_environment,
+                                       use_fspl=True, scaler='MinMaxScaler', model_type='RNN')
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##-------------------old version code-----------------------##
 class PathLossDataset(Dataset):
     def __init__(self, input_dir, scaler='None'):
         self.dataset = pd.read_csv(input_dir, header=None)
@@ -102,80 +206,3 @@ def load_pathloss_dataset(input_dir, batch_size, shuffle, num_workers, type='ANN
         pathloss_dataloader = DataLoader(pathloss_dataset, batch_size=batch_size, shuffle=shuffle,
                                          num_workers=num_workers)
         return pathloss_dataloader
-
-
-def fit_selected_scaler(addition_dataset, scaler='None'):
-    tied_scaler = None
-    if scaler != 'None' and scaler == 'MinMaxScaler':
-        temp = []
-        tied_scaler = set_scaler(scaler)
-        for pack in addition_dataset:
-            for line in pack:
-                temp.append(line)
-        temp = np.array(temp)
-        temp = np.delete(temp, 0, axis=1)
-        tied_scaler.fit(temp)
-    save_scaler_name = './{}_saved.pkl'.format(scaler)
-    joblib.dump(tied_scaler, save_scaler_name)
-    return tied_scaler
-
-
-def load_path_loss_with_detail_dataset(input_dir, device_id, data_environment, model_type='RNN', scaler='None', use_fspl=False, use_r2d=False,
-                                       num_workers=4, batch_size=62, shuffle=True):
-    # 파일들이 저장되었는 경로를 받아 파일 리스트를 얻어냄
-    file_list = get_all_file_path(input_dir, file_extension='csv')
-    target_dataset = []
-    addition_dataset = []
-
-    for file in file_list:
-        temp = pd.read_csv(file)
-        temp = temp[temp['mac'] == device_id]
-        temp = temp.drop(['mac', 'type'], axis=1)
-        target_dataset.append(temp)
-
-    for item in target_dataset:
-        temp = []
-        # meter, rssi, tx_power, tx_height, rx_height, tx_antenna_gain, rx_antenna_gain, environment, FSPL,
-        for idx, line in item.iterrows():
-            data = line.tolist()
-            data.append(data_environment.get('tx_power'))
-            data.append(data_environment.get('tx_height'))
-            data.append(data_environment.get('rx_height'))
-            data.append(data_environment.get('tx_antenna_gain'))
-            data.append(data_environment.get('rx_antenna_gain'))
-            data.append(data_environment.get('environment'))
-            if use_fspl:
-                data.append(path_loss.get_distance_with_rssi_fspl(data[1]))
-            temp.append(data)
-        addition_dataset.append(temp)
-
-    tied_scaler = fit_selected_scaler(addition_dataset=addition_dataset, scaler=scaler)
-
-    if model_type == 'FFNN':
-        pathloss_dataset = PathLossWithDetailDataset(input_data=addition_dataset, scaler=tied_scaler,
-                                                     model_type=model_type)
-        # pathloss_dataloader = DataLoader(pathloss_dataset, batch_size=batch_size, shuffle=shuffle,
-        #                                  num_workers=num_workers)
-    elif model_type == 'RNN':
-        pass
-
-
-
-
-
-
-
-
-
-# board : f8:8a:5e:2d:80:f4
-# custom : 04:ee:03:74:ae:dd
-# environment
-# - grass : 1
-# - block : 2
-# weather 에 대한 상태가 들어가면 좋을지를 고민해 보아야 한다. 혹은 기온이라더지 등
-if __name__ == '__main__':
-    data_environment = {'tx_power': 5, 'tx_height': 2, 'rx_height': 0.01, 'tx_antenna_gain': -1.47,
-                        'rx_antenna_gain': -1, 'environment': 1}
-    load_path_loss_with_detail_dataset('../dataset/v1_timeline', device_id='f8:8a:5e:2d:80:f4', data_environment=data_environment,
-                                       use_fspl=True, scaler='MinMaxScaler', model_type='RNN')
-
