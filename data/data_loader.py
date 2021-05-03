@@ -26,14 +26,26 @@ def get_all_file_path(input_dir, file_extension):
 
 
 class PathLossWithDetailDataset(Dataset):
-    def __init__(self, input_dir):
-        pass
+    def __init__(self, input_data, scaler='None', model_type='FFNN'):
+        self.scaler = scaler
+        self.model_type = model_type
+        self.dataset = []
+
+        if self.model_type == 'FFNN':
+            for pack in input_data:
+                for line in pack:
+                    self.dataset.append(line)
+            self.dataset = np.array(self.dataset)
 
     def __len__(self):
-        pass
+        return len(self.dataset)
 
-    def __getitem__(self, item):
-        pass
+    def __getitem__(self, idx):
+        pick = self.dataset[idx]
+        y_label = pick[0]
+        x_data = pick[1:]
+        x_data = self.scaler.transform(x_data)
+        return x_data, y_label
 
 
 
@@ -108,7 +120,8 @@ def fit_selected_scaler(addition_dataset, scaler='None'):
     return tied_scaler
 
 
-def load_path_loss_with_detail_dataset(input_dir, device_id, data_environment, model_type='RNN', scaler='None', use_fspl=False, use_r2d=False):
+def load_path_loss_with_detail_dataset(input_dir, device_id, data_environment, model_type='RNN', scaler='None', use_fspl=False, use_r2d=False,
+                                       num_workers=4, batch_size=62, shuffle=True):
     # 파일들이 저장되었는 경로를 받아 파일 리스트를 얻어냄
     file_list = get_all_file_path(input_dir, file_extension='csv')
     target_dataset = []
@@ -138,6 +151,13 @@ def load_path_loss_with_detail_dataset(input_dir, device_id, data_environment, m
 
     tied_scaler = fit_selected_scaler(addition_dataset=addition_dataset, scaler=scaler)
 
+    if model_type == 'FFNN':
+        pathloss_dataset = PathLossWithDetailDataset(input_data=addition_dataset, scaler=tied_scaler,
+                                                     model_type=model_type)
+        # pathloss_dataloader = DataLoader(pathloss_dataset, batch_size=batch_size, shuffle=shuffle,
+        #                                  num_workers=num_workers)
+    elif model_type == 'RNN':
+        pass
 
 
 
