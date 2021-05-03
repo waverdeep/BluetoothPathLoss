@@ -74,7 +74,6 @@ def show_all_metrics_result(rssi, y_data, pred):
     print('FRECHET_DISTANCE : {}'.format(frechet_result))
 
 
-
 if __name__ == '__main__':
     print('metrics test')
     # frechet distance

@@ -6,7 +6,7 @@ def get_distance_with_rssi_fspl(rssi, freq=2412 * math.pow(10, 6)):
     return math.pow(10, (-rssi - 20 * math.log10(freq) + 147.55) / 20)
 
 
-def get_distance_with_rssi(rssi, tx_power, free_space=4):
+def get_distance_with_rssi(rssi, tx_power, free_space=2):
     return math.pow(10, (tx_power - rssi) / (10 * free_space))
 
 
