@@ -17,5 +17,10 @@ regression 형태로 문제를 해결하고 있음
 
 
 ## 사용한 모델
-- ANN : Fully Connected Layer 4계층으로 이루어진 모델 (Dropout layer 존재, Activiation Function은 PReLU 사용)
+- FFNN : Fully Connected Layer 4계층으로 이루어진 모델 (Dropout layer 존재, Activiation Function은 PReLU 사용)
 - LSTM : Recurrent 한 모델을 적용해보기위해 LSTM 사용 (many to one의 형태로 구현)
+
+## 프로젝트 구조
+### data directory
+학습을 위한 데이터를 가공하는 역할을 담당
+- data.py : 학습을 위해 추가적인 파라미터를 추가, 데이터 스케일링을 진행 가능 
