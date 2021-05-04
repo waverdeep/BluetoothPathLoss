@@ -3,8 +3,8 @@ import pandas as pd
 from torch.utils.data import DataLoader, Dataset
 import glob
 import os
-from tool import path_loss
 from sklearn.model_selection import train_test_split
+import numpy as np
 
 
 def get_all_file_path(input_dir, file_extension):
@@ -31,10 +31,13 @@ class PathLossWithDetailDataset(Dataset):
             y_label = pick[0]
             x_data = pick[1:]
             return torch.tensor(x_data, dtype=torch.float), torch.tensor(y_label, dtype=torch.float)
-
+        elif self.model_type == 'RNN':
+            y_label = pick[0][0]
+            x_data = np.delete(pick, 0, axis=1)
+            return torch.tensor(x_data, dtype=torch.float), torch.tensor(y_label, dtype=torch.float)
 
 def load_path_loss_with_detail_dataset(input_dir, model_type='RNN',
-                                       num_workers=4, batch_size=62, shuffle=True, sequence_length=10):
+                                       num_workers=4, batch_size=62, shuffle=True, input_size=10):
     # 파일들이 저장되었는 경로를 받아 파일 리스트를 얻어냄
     file_list = get_all_file_path(input_dir, file_extension='csv')
     addition_dataset = []
@@ -72,8 +75,10 @@ def load_path_loss_with_detail_dataset(input_dir, model_type='RNN',
                 div_meter_pack.append(temp_pack[temp_pack[0] == key].to_numpy())
 
         for n_idx, pack in enumerate(div_meter_pack):
-            for i in range(len(pack)-sequence_length):
-                rnn_dataset.append(pack[i:i+sequence_length])
+            for i in range(len(pack)-input_size):
+                rnn_dataset.append(pack[i:i+input_size])
+
+        rnn_dataset = np.array(rnn_dataset)
 
         train_data, test_data, valid_data = data_split(rnn_dataset)
         pathloss_train_dataset = PathLossWithDetailDataset(input_data=train_data,
