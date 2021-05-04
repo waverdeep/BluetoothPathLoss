@@ -28,9 +28,10 @@ class VanillaRecurrentNetwork(nn.Module):
     def __init__(self, input_size=2, recurrent_model='LSTM', activation='PReLU'):
         super(VanillaRecurrentNetwork, self).__init__()
         self.activation = activation
-        self.hidden_size = 128
+        self.hidden_size = 64
         self.num_layers = 2
-        self.lstm01 = model_config.set_recurrent_layer(name=recurrent_model, input_size=input_size, hidden_size=self.hidden_size, num_layers=self.num_layers,
+        self.lstm01 = model_config.set_recurrent_layer(name=recurrent_model, input_size=input_size,
+                                                       hidden_size=self.hidden_size, num_layers=self.num_layers,
                                                        batch_first=True)
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(self.hidden_size, 64),
