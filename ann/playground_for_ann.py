@@ -32,17 +32,13 @@ def train(model_config, count, writer_name):
     train_dataloader, \
     test_dataloader, \
     valid_dataloader = data_loader.load_path_loss_with_detail_dataset(input_dir=model_config['input_dir'],
-                                                                      device_id=model_config['device_id'],
-                                                                      data_environment=model_config['data_environment'],
                                                                       model_type=model_config['model'],
-                                                                      scaler=model_config['MinMaxScaler'],
-                                                                      use_fspl=model_config['use_fspi'],
                                                                       num_workers=model_config['num_workers'],
                                                                       batch_size=model_config['batch_size'],
                                                                       shuffle=model_config['shuffle'])
     num_epochs = model_config['epoch']
     if model_config['model'] == 'FFNN':
-        nn_model = model.VanillaNetwork(input_size).cuda()
+        nn_model = model.VanillaNetwork(model_config['input_size']).cuda()
         criterion = optimizer.set_criterion(model_config['criterion'])
         optim = optimizer.set_optimizer(model_config['optimizer'],
                                         nn_model, model_config['learning_rate'])
@@ -55,11 +51,11 @@ def train(model_config, count, writer_name):
                     x_data = x_data.cuda()
                     y_data = y_data.cuda()
                 y_data = y_data.unsqueeze(-1)
-                pred = model(x_data)
+                pred = nn_model(x_data)
                 loss = criterion(pred, y_data)
-                optimizer.zero_grad()
+                optim.zero_grad()
                 loss.backward()
-                optimizer.step()
+                optim.step()
 
                 # ...학습 중 손실(running loss)을 기록하고
                 writer.add_scalar('mseloss training loss',
@@ -70,9 +66,9 @@ def train(model_config, count, writer_name):
                     print('Epoch [{}/{}], Loss: {:.4f}'.format(epoch + 1, num_epochs, loss.item()))
 
             torch.save({epoch: epoch,
-                        'model': model,
-                        'model_state_dict': model.state_dict()},
-                       "checkpoints/testcase{}_epoch_{}.pt".format(str(count).zfill(3), epoch))
+                        'model': nn_model,
+                        'model_state_dict': nn_model.state_dict()},
+                       "../checkpoints/testcase{}_epoch_{}.pt".format(str(count).zfill(3), epoch))
 
             if (epoch + 1) % 10 == 0:
                 with torch.no_grad():
@@ -82,7 +78,7 @@ def train(model_config, count, writer_name):
                         x_data, y_data = data
                         x_data = x_data.cuda()
                         y_data = y_data.cuda()
-                        pred = model(x_data)
+                        pred = nn_model(x_data)
                         pred = pred.squeeze(-1)
                         rssi = x_data[:, 0]
                         rssi = rssi.cpu().numpy()
@@ -117,8 +113,6 @@ def train(model_config, count, writer_name):
 
 
 if __name__ == '__main__':
-    data_environment = {'tx_power': 5, 'tx_height': 2, 'rx_height': 0.01, 'tx_antenna_gain': -1.47,
-                        'rx_antenna_gain': -1, 'environment': 1}
     model_config = {
         # model config
         'model': 'FFNN', 'criterion': 'MSELoss',
@@ -126,13 +120,11 @@ if __name__ == '__main__':
         'cuda': True, 'batch_size': 128,
         'epoch': 800, 'input_size': 8,
         # dataset config
-        'input_dir': '../dataset/v1_timeline',
-        'device_id': 'f8:8a:5e:2d:80:f4', 'data_environment': data_environment,
-        'use_fspl': True, 'scaler': 'MinMaxScaler',
+        'input_dir': '../dataset/v1_scaled',
         'shuffle': True, 'num_workers': 8,
     }
 
     count = 1
-    writer_name = 'runs_prev'
+    writer_name = '../runs_prev'
 
     train(model_config=model_config, count=count, writer_name=writer_name)
