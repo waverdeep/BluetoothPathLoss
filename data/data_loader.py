@@ -12,6 +12,11 @@ def get_all_file_path(input_dir, file_extension):
     return temp
 
 
+def data_split(dataset, test_size=0.3):
+    train_data, test_data = train_test_split(dataset, test_size=test_size, shuffle=True, random_state=42)
+    test_data, valid_data = train_test_split(test_data, test_size=test_size, shuffle=True, random_state=42)
+    return train_data, test_data, valid_data
+
 class PathLossWithDetailDataset(Dataset):
     def __init__(self, input_data,  model_type='FFNN'):
         self.model_type = model_type
@@ -29,7 +34,7 @@ class PathLossWithDetailDataset(Dataset):
 
 
 def load_path_loss_with_detail_dataset(input_dir, model_type='RNN',
-                                       num_workers=4, batch_size=62, shuffle=True):
+                                       num_workers=4, batch_size=62, shuffle=True, sequence_length=10):
     # 파일들이 저장되었는 경로를 받아 파일 리스트를 얻어냄
     file_list = get_all_file_path(input_dir, file_extension='csv')
     addition_dataset = []
@@ -41,8 +46,7 @@ def load_path_loss_with_detail_dataset(input_dir, model_type='RNN',
         for pack in addition_dataset:
             for line in pack:
                 ffnn_dataset.append(line)
-        train_data, test_data = train_test_split(ffnn_dataset, test_size=0.3, shuffle=True, random_state=42)
-        test_data, valid_data = train_test_split(test_data, test_size=0.5, shuffle=True, random_state=42)
+        train_data, test_data, valid_data = data_split(ffnn_dataset)
         pathloss_train_dataset = PathLossWithDetailDataset(input_data=train_data,
                                                            model_type=model_type)
         pathloss_test_dataset = PathLossWithDetailDataset(input_data=test_data,
@@ -58,17 +62,37 @@ def load_path_loss_with_detail_dataset(input_dir, model_type='RNN',
         return pathloss_train_dataloader, pathloss_test_dataloader, pathloss_valid_dataloader
 
     elif model_type == 'RNN':
-        pass
+        div_meter_pack = []
+        rnn_dataset = []
+        for n_idx, pack in enumerate(addition_dataset):
+            label = pack[:, 0].tolist()
+            label = list(set(label))
+            temp_pack = pd.DataFrame(pack)
+            for key in label:
+                div_meter_pack.append(temp_pack[temp_pack[0] == key].to_numpy())
+
+        for n_idx, pack in enumerate(div_meter_pack):
+            for i in range(len(pack)-sequence_length):
+                rnn_dataset.append(pack[i:i+sequence_length])
+
+        train_data, test_data, valid_data = data_split(rnn_dataset)
+        pathloss_train_dataset = PathLossWithDetailDataset(input_data=train_data,
+                                                           model_type=model_type)
+        pathloss_test_dataset = PathLossWithDetailDataset(input_data=test_data,
+                                                          model_type=model_type)
+        pathloss_valid_dataset = PathLossWithDetailDataset(input_data=valid_data,
+                                                           model_type=model_type)
+        pathloss_train_dataloader = DataLoader(pathloss_train_dataset, batch_size=batch_size, shuffle=shuffle,
+                                               num_workers=num_workers)
+        pathloss_test_dataloader = DataLoader(pathloss_test_dataset, batch_size=batch_size, shuffle=shuffle,
+                                              num_workers=num_workers)
+        pathloss_valid_dataloader = DataLoader(pathloss_valid_dataset, batch_size=batch_size, shuffle=shuffle,
+                                               num_workers=num_workers)
+        return pathloss_train_dataloader, pathloss_test_dataloader, pathloss_valid_dataloader
 
 
-# board : f8:8a:5e:2d:80:f4
-# custom : 04:ee:03:74:ae:dd
-# environment
-# - grass : 1
-# - block : 2
-# weather 에 대한 상태가 들어가면 좋을지를 고민해 보아야 한다. 혹은 기온이라더지 등
 if __name__ == '__main__':
-    load_path_loss_with_detail_dataset('../dataset/v1_scaled', model_type='FFNN')
+    load_path_loss_with_detail_dataset('../dataset/v1_scaled', model_type='RNN')
 
 
 
