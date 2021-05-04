@@ -125,7 +125,7 @@ if __name__ == '__main__':
     config = {
         'tx_power': 5, 'tx_height': 2, 'rx_height': 0.01, 'tx_antenna_gain': -1.47,
         'rx_antenna_gain': -1, 'environment': 1, 'device_id': 'f8:8a:5e:2d:80:f4',
-        'use_fspl': True, 'save_dir': '../dataset/v1_scaled/', 'scaler': 'MinMaxScaler'
+        'use_fspl': True, 'save_dir': '../dataset/v1_scaled/', 'scaler': 'None'
     }
     get_addition_dataset(input_dir=input_dir, config=config)
 
