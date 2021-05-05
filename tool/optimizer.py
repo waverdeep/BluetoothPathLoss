@@ -5,7 +5,7 @@ def set_optimizer(name, model, learning_rate):
     if name == 'AdaDelta':
         return torch.optim.Adadelta(model.parameters(), learning_rate)
     elif name == 'AdaGrad':
-        return torch.optim.AdaGrad(model.parameters(), learning_rate)
+        return torch.optim.Adagrad(model.parameters(), learning_rate)
     elif name == 'Adam':
         return torch.optim.Adam(model.parameters(), learning_rate)
     elif name == 'AdamW':
