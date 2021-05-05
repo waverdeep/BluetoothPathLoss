@@ -1,7 +1,7 @@
 [
   {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "ReLU",
     "learning_rate": 0.00001,
@@ -16,7 +16,7 @@
   },
   {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "PReLU",
     "learning_rate": 0.00001,
@@ -31,7 +31,7 @@
   },
   {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "LeakyReLU",
     "learning_rate": 0.00001,
@@ -46,7 +46,7 @@
   },
   {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "ELU",
     "learning_rate": 0.00001,
@@ -61,7 +61,7 @@
   },
   {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "Tanh",
     "learning_rate": 0.00001,
@@ -76,7 +76,7 @@
   },
     {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "ReLU",
     "learning_rate": 0.0001,
@@ -91,7 +91,7 @@
   },
   {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "PReLU",
     "learning_rate": 0.0001,
@@ -106,7 +106,7 @@
   },
   {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "LeakyReLU",
     "learning_rate": 0.0001,
@@ -121,7 +121,7 @@
   },
   {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "ELU",
     "learning_rate": 0.0001,
@@ -136,7 +136,7 @@
   },
   {
     "model": "RNN",
-    "criterion'": "MSELoss",
+    "criterion": "MSELoss",
     "optimizer": "AdamW",
     "activation": "Tanh",
     "learning_rate": 0.0001,
