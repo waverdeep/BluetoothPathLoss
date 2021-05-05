@@ -9,9 +9,10 @@ import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 import tensorflow as tf
 import tensorboard as tb
-
 tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
 from tool import optimizer
+from data import data_preprocessing
+import json
 
 
 def set_tensorboard_writer(name):
@@ -27,23 +28,34 @@ def close_tensorboard_writer(writer):
     writer.close()
 
 
-def train(model_config, count, writer_name):
+def train(model_config, count, writer_name, message):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    train_dataloader, \
-    test_dataloader, \
-    valid_dataloader = data_loader.load_path_loss_with_detail_dataset(input_dir=model_config['input_dir'],
-                                                                      model_type=model_config['model'],
-                                                                      num_workers=model_config['num_workers'],
-                                                                      batch_size=model_config['batch_size'],
-                                                                      shuffle=model_config['shuffle'],
-                                                                      input_size=model_config['input_size'])
+
+    if model_config['model'] == 'FFNN':
+        train_dataloader, \
+        test_dataloader, \
+        valid_dataloader = data_loader.load_path_loss_with_detail_dataset(input_dir=model_config['input_dir'],
+                                                                          model_type=model_config['model'],
+                                                                          num_workers=model_config['num_workers'],
+                                                                          batch_size=model_config['batch_size'],
+                                                                          shuffle=model_config['shuffle'],
+                                                                          input_size=model_config['input_size'])
+    elif model_config['model'] == 'RNN':
+        train_dataloader, \
+        test_dataloader, \
+        valid_dataloader = data_loader.load_path_loss_with_detail_dataset(input_dir=model_config['input_dir'],
+                                                                          model_type=model_config['model'],
+                                                                          num_workers=model_config['num_workers'],
+                                                                          batch_size=model_config['batch_size'],
+                                                                          shuffle=model_config['shuffle'],
+                                                                          input_size=model_config['sequence_length'])
     num_epochs = model_config['epoch']
     if model_config['model'] == 'FFNN':
-        nn_model = model.VanillaNetwork(model_config['input_size']).cuda()
+        nn_model = model.VanillaNetwork(model_config['input_size'], activation=model_config['activation']).cuda()
         criterion = optimizer.set_criterion(model_config['criterion']).cuda()
         optim = optimizer.set_optimizer(model_config['optimizer'],
                                         nn_model, model_config['learning_rate'])
-        writer = set_tensorboard_writer('{}/testcase{}'.format(writer_name, str(count).zfill(3)))
+        writer = set_tensorboard_writer('{}/testcase_{}_{}'.format(writer_name, message, str(count).zfill(3)))
 
         for epoch in range(num_epochs):
             for i, data in enumerate(train_dataloader):
@@ -69,7 +81,7 @@ def train(model_config, count, writer_name):
             torch.save({epoch: epoch,
                         'model': nn_model,
                         'model_state_dict': nn_model.state_dict()},
-                       "../checkpoints_v1/testcase{}_epoch_{}.pt".format(str(count).zfill(3), epoch))
+                       "../checkpoints_v1/testcase_{}_{}_epoch_{}.pt".format(message, str(count).zfill(3), epoch))
 
             if (epoch + 1) % 10 == 0:
                 with torch.no_grad():
@@ -112,11 +124,11 @@ def train(model_config, count, writer_name):
                     print("MAE Score : {}".format(test_mae_score))
 
     elif model_config['model'] == 'RNN':
-        nn_model = model.VanillaRecurrentNetwork(model_config['input_size']).cuda()
+        nn_model = model.VanillaRecurrentNetwork(model_config['input_size'], activation=model_config['activation']).cuda()
         criterion = optimizer.set_criterion(model_config['criterion']).cuda()
         optim = optimizer.set_optimizer(model_config['optimizer'],
                                         nn_model, model_config['learning_rate'])
-        writer = set_tensorboard_writer('{}/testcase{}'.format(writer_name, str(count).zfill(3)))
+        writer = set_tensorboard_writer('{}/testcase_{}_{}'.format(writer_name, message, str(count).zfill(3)))
 
         for epoch in range(num_epochs):
             for i, data in enumerate(train_dataloader):
@@ -137,6 +149,11 @@ def train(model_config, count, writer_name):
 
                 if (epoch + 1) % 5 == 0:
                     print('Epoch [{}/{}], Loss: {:.4f}'.format(epoch + 1, num_epochs, loss.item()))
+
+                torch.save({epoch: epoch,
+                            'model': nn_model,
+                            'model_state_dict': nn_model.state_dict()},
+                           "../checkpoints_prev/testcase_{}_{}_epoch_{}.pt".format(message, str(count).zfill(3), epoch))
 
             if (epoch + 1) % 10 == 0:
                 with torch.no_grad():
@@ -186,13 +203,19 @@ if __name__ == '__main__':
         'model': 'RNN', 'criterion': 'MSELoss',
         'optimizer': 'AdaDelta', 'learning_rate': 0.001,
         'cuda': True, 'batch_size': 256,
-        'epoch': 800, 'input_size': 10,
+        'epoch': 800, 'input_size': 8, 'sequence_length': 10,
         # dataset config
         'input_dir': '../dataset/v1_scaled',
         'shuffle': True, 'num_workers': 8,
     }
 
-    count = 1
-    writer_name = '../runs_prev'
+    file_list = data_preprocessing.get_all_file_path('../configurations_prev/', file_extension='json')
+    for file in file_list:
+        with open(file) as f:
+            json_data = json.load(f)
+        filename = data_preprocessing.get_pure_filename(file)
+        for idx, data in enumerate(json_data):
+            print(idx, data)
+            writer_name = '../runs_prev'
+            train(model_config=data, count=idx, writer_name=writer_name, message=filename)
 
-    train(model_config=model_config, count=count, writer_name=writer_name)
