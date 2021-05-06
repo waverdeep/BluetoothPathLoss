@@ -209,13 +209,13 @@ if __name__ == '__main__':
         'shuffle': True, 'num_workers': 8,
     }
 
-    file_list = data_preprocessing.get_all_file_path('../configurations_prev/', file_extension='json')
+    file_list = data_preprocessing.get_all_file_path('../configurations_v1/', file_extension='json')
     for file in file_list:
         with open(file) as f:
             json_data = json.load(f)
         filename = data_preprocessing.get_pure_filename(file)
         for idx, data in enumerate(json_data):
             print(idx, data)
-            writer_name = '../runs_prev'
+            writer_name = '../runs_v1'
             train(model_config=data, count=idx, writer_name=writer_name, message=filename)
 
