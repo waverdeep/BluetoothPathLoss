@@ -9,7 +9,7 @@
     "epoch": 800,
     "input_size": 8,
     "sequence_length": 15,
-    "input_dir": "dataset/v1_scaled",
+    "input_dir": "dataset/v1_scaled_mm",
     "shuffle": true,
     "num_workers": 8
   },
@@ -23,7 +23,7 @@
     "epoch": 800,
     "input_size": 8,
     "sequence_length": 15,
-    "input_dir": "dataset/v1_scaled",
+    "input_dir": "dataset/v1_scaled_mm",
     "shuffle": true,
     "num_workers": 8
   },
@@ -37,7 +37,7 @@
     "epoch": 800,
     "input_size": 8,
     "sequence_length": 15,
-    "input_dir": "dataset/v1_scaled",
+    "input_dir": "dataset/v1_scaled_mm",
     "shuffle": true,
     "num_workers": 8
   },
@@ -51,7 +51,7 @@
     "epoch": 800,
     "input_size": 8,
     "sequence_length": 15,
-    "input_dir": "dataset/v1_scaled",
+    "input_dir": "dataset/v1_scaled_mm",
     "shuffle": true,
     "num_workers": 8
   },
@@ -65,7 +65,7 @@
     "epoch": 800,
     "input_size": 8,
     "sequence_length": 15,
-    "input_dir": "dataset/v1_scaled",
+    "input_dir": "dataset/v1_scaled_mm",
     "shuffle": true,
     "num_workers": 8
   }
