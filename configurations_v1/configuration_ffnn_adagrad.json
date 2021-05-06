@@ -2,8 +2,8 @@
   {
     "model": "FFNN",
     "criterion": "MSELoss",
-    "optimizer": "AdaDelta",
-    "activation": "PReLU",
+    "optimizer": "AdaGrad",
+    "activation": "ReLU",
     "learning_rate": 1,
     "cuda": true,
     "batch_size": 256,
@@ -17,8 +17,7 @@
   {
     "model": "FFNN",
     "criterion": "MSELoss",
-    "optimizer": "AdaDelta",
-    "activation": "PReLU",
+    "optimizer": "AdaGrad","activation": "ReLU",
     "learning_rate": 0.1,
     "cuda": true,
     "batch_size": 256,
@@ -32,8 +31,7 @@
   {
     "model": "FFNN",
     "criterion": "MSELoss",
-    "optimizer": "AdaDelta",
-    "activation": "PReLU",
+    "optimizer": "AdaGrad","activation": "ReLU",
     "learning_rate": 0.01,
     "cuda": true,
     "batch_size": 256,
@@ -47,8 +45,7 @@
   {
     "model": "FFNN",
     "criterion": "MSELoss",
-    "optimizer": "AdaDelta",
-    "activation": "PReLU",
+    "optimizer": "AdaGrad","activation": "ReLU",
     "learning_rate": 0.001,
     "cuda": true,
     "batch_size": 256,
@@ -62,8 +59,7 @@
   {
     "model": "FFNN",
     "criterion": "MSELoss",
-    "optimizer": "AdaDelta",
-    "activation": "PReLU",
+    "optimizer": "AdaGrad","activation": "ReLU",
     "learning_rate": 0.0001,
     "cuda": true,
     "batch_size": 256,
@@ -77,8 +73,7 @@
   {
     "model": "FFNN",
     "criterion": "MSELoss",
-    "optimizer": "AdaDelta",
-    "activation": "PReLU",
+    "optimizer": "AdaGrad","activation": "ReLU",
     "learning_rate": 0.00001,
     "cuda": true,
     "batch_size": 256,
