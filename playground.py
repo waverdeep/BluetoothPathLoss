@@ -32,7 +32,6 @@ def test(model_config, nn_model, dataloader, device, writer, epoch):
         total_label = []
         total_pred = []
         for i, data in enumerate(dataloader):
-            x_data, y_data = None
             if model_config['model'] == 'FFNN':
                 x_data, y_data = data
             elif model_config['model'] == 'RNN':
@@ -88,7 +87,6 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
 
     for epoch in range(num_epochs):
         for i, data in enumerate(train_dataloader):
-            x_data, y_data = None
             if model_config['model'] == 'FFNN':
                 x_data, y_data = data
             elif model_config['model'] == 'RNN':
@@ -104,7 +102,7 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
             # ...학습 중 손실(running loss)을 기록하고
             writer.add_scalar('mseloss training loss', loss / 1000, epoch * len(train_dataloader) + i)
             torch.save({epoch: epoch, 'model': nn_model, 'model_state_dict': nn_model.state_dict()},
-                       "../{}/testcase_{}_{}_epoch_{}.pt".format(checkpoint_dir, message, str(count).zfill(3), epoch))
+                       "{}/testcase_{}_{}_epoch_{}.pt".format(checkpoint_dir, message, str(count).zfill(3), epoch))
 
         if (epoch + 1) % 10 == 0:
             test(model_config=model_config, nn_model=nn_model, dataloader=test_dataloader, device=device, writer=writer, epoch=epoch)
@@ -112,9 +110,9 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
 
 
 if __name__ == '__main__':
-    file_path = '../configurations_prev/'
-    writer_name = '../runs_prev'
-    checkpoint_dir = 'checkpoints_prev'
+    file_path = 'configurations_v1/'
+    writer_name = 'runs_v1'
+    checkpoint_dir = 'checkpoints_v1'
     file_list = data_preprocessing.get_all_file_path(file_path, file_extension='json')
 
     for file in file_list:
