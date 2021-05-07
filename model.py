@@ -77,14 +77,14 @@ class VanillaCNNRNNNetwork(nn.Module):
     def __init__(self):
         super(VanillaCNNRNNNetwork, self).__init__()
         # convolution
-        self.layers = nn.Sequential(nn.Conv1(1, 3, 3),
+        self.layers = nn.Sequential(nn.Conv1d(1, 3, 3),
                                     nn.LSTM(input_size=8,
                                             hidden_size=256, num_layers=2,
                                             batch_first=True),
                                     nn.Linear(256, 64),
                                     nn.Dropout(0.3),
-                                    nn.ReLU(64, 32).
-                                    nn.Linear(32, 1))
+                                    nn.ReLU(),
+                                    nn.Linear(64, 1))
         # lstm
 
         # feed forward
