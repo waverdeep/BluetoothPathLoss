@@ -12,6 +12,7 @@ tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
 import tool.optimizer as optimizer
 import data.data_preprocessing as data_preprocessing
 import json
+torch.manual_seed(42)
 
 
 def set_tensorboard_writer(name):
@@ -72,11 +73,26 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
                                                                       shuffle=model_config['shuffle'],
                                                                       input_size=model_config['input_size'] if model_config['model'] == 'FFNN' else model_config['sequence_length'] )
     if model_config['model'] == 'FFNN':
-        nn_model = model.VanillaNetwork(model_config['input_size'], activation=model_config['activation'])
+        if 'layer' in model_config:
+            nn_model = model.VanillaNetworkCustom(model_config['input_size'], activation=model_config['activation'],
+                                                  layer=model_config['layer'])
+        else:
+            nn_model = model.VanillaNetwork(model_config['input_size'], activation=model_config['activation'])
         if device:
             nn_model = nn_model.cuda()
     elif model_config['model'] == 'RNN':
-        nn_model = model.VanillaRecurrentNetwork(model_config['input_size'], activation=model_config['activation'])
+        if 'recurrent_model' in model_config:
+            if 'bidirectional' in model_config:
+                nn_model = model.VanillaRecurrentNetwork(model_config['input_size'],
+                                                         activation=model_config['activation'],
+                                                         recurrent_model=model_config['recurrent_model'],
+                                                         bidirectional=model_config['bidirectional'])
+            else:
+                nn_model = model.VanillaRecurrentNetwork(model_config['input_size'],
+                                                         activation=model_config['activation'],
+                                                         recurrent_model=model_config['recurrent_model'])
+        else:
+            nn_model = model.VanillaRecurrentNetwork(model_config['input_size'], activation=model_config['activation'])
         if device:
             nn_model = nn_model.cuda()
     criterion = optimizer.set_criterion(model_config['criterion'])
@@ -97,6 +113,7 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
                 y_data = y_data.cuda()
             y_pred = nn_model(x_data).reshape(-1)
             loss = criterion(y_pred, y_data)
+            optim.zero_grad()
             loss.backward()
             optim.step()
             # ...학습 중 손실(running loss)을 기록하고
@@ -114,6 +131,8 @@ if __name__ == '__main__':
     writer_name = 'runs_v1'
     checkpoint_dir = 'checkpoints_v1'
     file_list = data_preprocessing.get_all_file_path(file_path, file_extension='json')
+    file_list = file_list[16:]
+    print(file_list)
 
     for file in file_list:
         with open(file) as f:
