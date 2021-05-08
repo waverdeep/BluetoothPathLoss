@@ -1,0 +1,30 @@
+[
+  {
+    "model": "RNN",
+    "criterion": "MSELoss",
+    "optimizer": "Adam","activation": "PReLU",
+    "learning_rate": 0.01,
+    "cuda": true,
+    "batch_size": 512,
+    "epoch": 1500,
+    "input_size": 8,
+    "sequence_length": 15,
+    "input_dir": "dataset/v1_scaled_mm",
+    "shuffle": true,
+    "num_workers": 8
+  },
+  {
+    "model": "RNN",
+    "criterion": "MSELoss",
+    "optimizer": "AdamW","activation": "PReLU",
+    "learning_rate": 0.01,
+    "cuda": true,
+    "batch_size": 512,
+    "epoch": 1500,
+    "input_size": 8,
+    "sequence_length": 15,
+    "input_dir": "dataset/v1_scaled_mm",
+    "shuffle": true,
+    "num_workers": 8
+  }
+]
