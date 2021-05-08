@@ -80,7 +80,7 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
             nn_model = model.VanillaNetwork(model_config['input_size'], activation=model_config['activation'])
         if device:
             nn_model = nn_model.cuda()
-    elif model_config['model'] == 'RNN':
+    elif model_config['model'] == 'RNN' or model_config['model'] == 'CNNRNN':
         if 'recurrent_model' in model_config:
             if 'bidirectional' in model_config:
                 nn_model = model.VanillaRecurrentNetwork(model_config['input_size'],
@@ -107,6 +107,10 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
                 x_data, y_data = data
             elif model_config['model'] == 'RNN':
                 x_data = data[:][0]
+                y_data = data[:][1]
+            elif model_config['model'] == 'CNNRNN':
+                x_data = data[:][0]
+                x_data = x_data.transpose(1, 2)
                 y_data = data[:][1]
             if device:
                 x_data = x_data.cuda()
