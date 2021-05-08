@@ -30,10 +30,7 @@ class VanillaNetwork(nn.Module):
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(input_size, 64),
             model_config.set_activation(self.activation),
-            nn.Linear(64, 128),
-            nn.Dropout(0.3),
-            model_config.set_activation(self.activation),
-            nn.Linear(128, 64),
+            nn.Linear(64, 64),
             nn.Dropout(0.3),
             model_config.set_activation(self.activation),
             nn.Linear(64, 1)
@@ -65,7 +62,6 @@ class VanillaRecurrentNetwork(nn.Module):
     def forward(self, x):
         h_0 = Variable(torch.zeros(
             self.num_layers, x.size(0), self.hidden_size)).cuda()
-
         c_0 = Variable(torch.zeros(
             self.num_layers, x.size(0), self.hidden_size)).cuda()
         output, (h_out, _) = self.lstm01(x, (h_0, c_0))
@@ -93,10 +89,9 @@ class VanillaCNNRNNNetwork(nn.Module):
         print(out.shape)
         out = out.transpose(1, 2)
         h_0 = Variable(torch.zeros(
-            self.num_layers, x.size(0), self.hidden_size))
-
+            self.num_layers, x.size(0), self.hidden_size)).cuda()
         c_0 = Variable(torch.zeros(
-            self.num_layers, x.size(0), self.hidden_size))
+            self.num_layers, x.size(0), self.hidden_size)).cuda()
         out, (h_out, _) = self.lstm_layer(out, (h_0, c_0))
         out = self.activation(self.dropout(self.linear_layer1(out)))
         out = self.linear_layer2(out)
