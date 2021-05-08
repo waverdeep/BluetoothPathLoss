@@ -20,6 +20,43 @@ regression 형태로 문제를 해결하고 있음
 - FFNN : Fully Connected Layer 4계층으로 이루어진 모델 (Dropout layer 존재, Activiation Function은 PReLU 사용)
 - LSTM : Recurrent 한 모델을 적용해보기위해 LSTM 사용 (many to one의 형태로 구현)
 
+## V1 실험 모델
+- dataset : scaled dataset (MinMaxScaler)
+### RNN
+- model : LSTM
+- hidden size : 32
+- num layers : 1
+- input size : 8
+- sequence length : 15
+- shuffle : True
+- bidirectional : False
+- batch first : True
+- linear : 32 -> 64
+- dropout : 0.3
+- activation function : PReLU
+- linear : 64 -> 32
+- dropout : 0.3
+- activation function : PReLU
+- linear : 32 -> 1
+- learning rate : 0.01
+- optimizer : Adam or AdamW
+- criterion : MSELoss
+
+### FFNN
+- linear : 8 -> 64
+- dropout : 0.3
+- activation function : PReLU
+- linear : 64 -> 128
+- dropout : 0.3
+- activation function : PReLU
+- linear : 128 -> 64
+- dropout : 0.3
+- activation function : PReLU
+- linear : 64 -> 1
+- learning rate : 0.001 or 0.01
+- optimizer : AdamW or Adam
+- criterion : MSELoss
+
 ## 프로젝트 구조
 ### data directory
 학습을 위한 데이터를 가공하는 역할을 담당
