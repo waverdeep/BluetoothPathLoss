@@ -44,7 +44,7 @@ class VanillaNetwork(nn.Module):
 
 
 class VanillaRecurrentNetwork(nn.Module):
-    def __init__(self, input_size=2, recurrent_model='LSTM', activation='PReLU', bidirectional=False):
+    def __init__(self, input_size=8, recurrent_model='LSTM', activation='PReLU', bidirectional=False):
         super(VanillaRecurrentNetwork, self).__init__()
         self.activation = activation
         self.hidden_size = 32
@@ -74,22 +74,33 @@ class VanillaRecurrentNetwork(nn.Module):
 
 
 class VanillaCNNRNNNetwork(nn.Module):
-    def __init__(self):
+    def __init__(self, input_size=8, recurrent_model='LSTM', activation='PReLU', bidirectional=False):
         super(VanillaCNNRNNNetwork, self).__init__()
         # convolution
-        self.layers = nn.Sequential(nn.Conv1d(1, 3, 3),
-                                    nn.LSTM(input_size=8,
-                                            hidden_size=256, num_layers=2,
-                                            batch_first=True),
-                                    nn.Linear(256, 64),
-                                    nn.Dropout(0.3),
-                                    nn.ReLU(),
-                                    nn.Linear(64, 1))
-        # lstm
+        self.num_layers = 1
+        self.hidden_size = 256
+        self.conv1d_layer = nn.Conv1d(8, 8, 3)
+        self.activation = activation
+        self.lstm_layer = nn.LSTM(input_size=input_size, hidden_size=self.hidden_size, num_layers=self.num_layers,
+                                  batch_first=True)
+        self.linear_layer1 = nn.Linear(256, 64)
+        self.dropout = nn.Dropout(0.3)
+        self.activation = model_config.set_activation(self.activation)
+        self.linear_layer2 = nn.Linear(64, 1)
 
-        # feed forward
     def forward(self, x):
-        return self.layers(x)
+        out = self.conv1d_layer(x)
+        print(out.shape)
+        out = out.transpose(1, 2)
+        h_0 = Variable(torch.zeros(
+            self.num_layers, x.size(0), self.hidden_size))
+
+        c_0 = Variable(torch.zeros(
+            self.num_layers, x.size(0), self.hidden_size))
+        out, (h_out, _) = self.lstm_layer(out, (h_0, c_0))
+        out = self.activation(self.dropout(self.linear_layer1(out)))
+        out = self.linear_layer2(out)
+        return out
 
 
 if __name__ == '__main__':
@@ -101,5 +112,9 @@ if __name__ == '__main__':
     elif kind == 'CNNRNN':
         model = VanillaCNNRNNNetwork()
     print("Model structure: ", model, "\n\n")
-    # for name, param in model.named_parameters():
-    #     print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
+    for name, param in model.named_parameters():
+        print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
+
+    # model test
+    x = torch.empty(62, 8, 15)
+    model(x)
