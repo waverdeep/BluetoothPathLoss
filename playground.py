@@ -131,12 +131,12 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
 
 
 if __name__ == '__main__':
-    file_path = 'configurations_v1/'
-    writer_name = 'runs_v1'
-    checkpoint_dir = 'checkpoints_v1'
+    file_path = 'configurations_v2/'
+    writer_name = 'runs_v2'
+    checkpoint_dir = 'checkpoints_v2'
     file_list = data_preprocessing.get_all_file_path(file_path, file_extension='json')
-    file_list = file_list[16:]
-    print(file_list)
+    print(file_list[8:])
+    file_list = file_list[8:]
 
     for file in file_list:
         with open(file) as f:
