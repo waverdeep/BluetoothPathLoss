@@ -110,7 +110,7 @@ def get_addition_dataset(input_dir, config):
 
     if config['scaler'] == 'None':
         pass
-    if config['scaler'] == 'MinMaxScaler':
+    else:
         tied_scaler = fit_selected_scaler(addition_dataset=addition_dataset, scaler=config['scaler'])
         for idx, item in enumerate(addition_dataset):
             temp = np.array(item)
@@ -121,6 +121,7 @@ def get_addition_dataset(input_dir, config):
             x_data = tied_scaler.transform(x_data)
             total = np.concatenate((y_label, x_data), axis=1)
             addition_dataset[idx] = total
+
 
     for idx, item in enumerate(addition_dataset):
         temp = pd.DataFrame(item)
