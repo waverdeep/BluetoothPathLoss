@@ -13,6 +13,7 @@ import tool.optimizer as optimizer
 import data.data_preprocessing as data_preprocessing
 import json
 torch.manual_seed(42)
+import pandas as pd
 
 
 def set_tensorboard_writer(name):
@@ -59,8 +60,11 @@ def test(model_config, nn_model, dataloader, device, writer, epoch):
         print("R2 Score : {}".format(test_r2_score))
         print("MAE Score : {}".format(test_mae_score))
 
+        return {epoch + 1: [test_mae_score, test_mse_score, test_rmse_score, test_r2_score]}
+
 
 def train(model_config, count, writer_name, message, checkpoint_dir):
+    saver = {}
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     num_epochs = model_config['epoch']
     nn_model = None
@@ -126,17 +130,21 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
                        "{}/testcase_{}_{}_epoch_{}.pt".format(checkpoint_dir, message, str(count).zfill(3), epoch))
 
         if (epoch + 1) % 10 == 0:
-            test(model_config=model_config, nn_model=nn_model, dataloader=test_dataloader, device=device, writer=writer, epoch=epoch)
+            output = test(model_config=model_config, nn_model=nn_model, dataloader=test_dataloader, device=device, writer=writer, epoch=epoch)
+            saver.update(output)
     close_tensorboard_writer(writer)
+
+    saver = pd.DataFrame(saver)
+    saver.to_csv('ffnn_v2/{}_{}.csv'.format(message, str(count).zfill(3)))
 
 
 if __name__ == '__main__':
-    file_path = 'configurations_v2/'
-    writer_name = 'runs_v2'
-    checkpoint_dir = 'checkpoints_v2'
+    file_path = 'cnnrnn_v2/'
+    writer_name = 'runs_cnnrnn_v2'
+    checkpoint_dir = 'checkpoints_cnnrnn_v2'
     file_list = data_preprocessing.get_all_file_path(file_path, file_extension='json')
-    print(file_list[8:])
-    file_list = file_list[8:]
+    print(file_list[:])
+    # file_list = file_list[8:]
 
     for file in file_list:
         with open(file) as f:
