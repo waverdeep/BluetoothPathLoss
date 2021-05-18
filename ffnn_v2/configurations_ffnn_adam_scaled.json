@@ -1,0 +1,44 @@
+[
+  {
+    "model": "FFNN",
+    "criterion": "MSELoss",
+    "optimizer": "Adam","activation": "ReLU",
+    "learning_rate": 0.001,
+    "cuda": true,
+    "batch_size": 512,
+    "epoch": 1500,
+    "input_size": 8,
+    "sequence_length": 5,
+    "input_dir": "dataset/v1_scaled_mm",
+    "shuffle": true,
+    "num_workers": 8
+  },
+    {
+    "model": "FFNN",
+    "criterion": "MSELoss",
+    "optimizer": "Adam","activation": "PReLU",
+    "learning_rate": 0.001,
+    "cuda": true,
+    "batch_size": 512,
+    "epoch": 1500,
+    "input_size": 8,
+    "sequence_length": 5,
+    "input_dir": "dataset/v1_scaled_mm",
+    "shuffle": true,
+    "num_workers": 8
+  },
+    {
+    "model": "FFNN",
+    "criterion": "MSELoss",
+    "optimizer": "Adam","activation": "LeakyReLU",
+    "learning_rate": 0.001,
+    "cuda": true,
+    "batch_size": 512,
+    "epoch": 1500,
+    "input_size": 8,
+    "sequence_length": 5,
+    "input_dir": "dataset/v1_scaled_mm",
+    "shuffle": true,
+    "num_workers": 8
+  }
+]

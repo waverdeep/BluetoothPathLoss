@@ -1,0 +1,16 @@
+[
+  {
+    "model": "FFNN",
+    "criterion": "MSELoss",
+    "optimizer": "AdamW","activation": "PReLU",
+    "learning_rate": 0.001,
+    "cuda": true,
+    "batch_size": 512,
+    "epoch": 1500,
+    "input_size": 8,
+    "sequence_length": 5,
+    "input_dir": "dataset/v1_scaled",
+    "shuffle": true,
+    "num_workers": 8
+  }
+]
