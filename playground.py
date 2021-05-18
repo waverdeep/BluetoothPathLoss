@@ -109,6 +109,7 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
         for i, data in enumerate(train_dataloader):
             if model_config['model'] == 'FFNN':
                 x_data, y_data = data
+                print(data)
             elif model_config['model'] == 'RNN':
                 x_data = data[:][0]
                 y_data = data[:][1]
@@ -139,9 +140,9 @@ def train(model_config, count, writer_name, message, checkpoint_dir):
 
 
 if __name__ == '__main__':
-    file_path = 'cnnrnn_v2/'
-    writer_name = 'runs_cnnrnn_v2'
-    checkpoint_dir = 'checkpoints_cnnrnn_v2'
+    file_path = 'ffnn_nofspl/'
+    writer_name = 'runs_ffnn_nofspl'
+    checkpoint_dir = 'checkpoints_ffnn_nofspl'
     file_list = data_preprocessing.get_all_file_path(file_path, file_extension='json')
     print(file_list[:])
     # file_list = file_list[8:]
