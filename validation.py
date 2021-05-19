@@ -6,12 +6,13 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
 import numpy as np
-
-# gpu
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+from sklearn.externals import joblib
+torch.manual_seed(42)
 
 
 def test(model_config, nn_model, dataloader, device):
+    scaler_name = "./data/MinMaxScaler_saved.pkl"
+    scaler = joblib.load(scaler_name)
     with torch.no_grad():
         total_rssi = []
         total_label = []
@@ -24,29 +25,72 @@ def test(model_config, nn_model, dataloader, device):
                 y_data = data[:][1]
             if device:
                 x_data = x_data.cuda()
-            y_pred = nn_model(x_data).reshape(-1).cpu()
-            x_data = x_data.cpu()
-            y_data = y_data.cpu()
-            total_rssi += x_data[:, 0].tolist()
+            y_pred = nn_model(x_data).reshape(-1).cpu().numpy()
+            x_data = x_data.cpu().numpy()
+            y_data = y_data.cpu().numpy()
+            rssi = x_data[:, 0]
+            new_rssi = []
+            for line in rssi:
+                new_rssi.append(line.tolist())
+            first_rssi = []
+            for dd in new_rssi:
+                dd = [dd]
+                temp = scaler.inverse_transform(dd).tolist()
+                first_rssi.append(temp[0][0])
+            print(first_rssi)
+            total_rssi += first_rssi
             total_label += y_data.tolist()
             total_pred += y_pred.tolist()
 
-        test_mse_score = mean_squared_error(total_label, total_pred)
-        test_r2_score = r2_score(total_label, total_pred)
-        test_mae_score = mean_absolute_error(total_label, total_pred)
-        test_rmse_score = np.sqrt(test_mse_score)
+
+            metrics.plot_rssi_to_distance(first_rssi, y_data, y_pred)
+            print('<<iter metric result>>')
+            metrics.show_all_metrics_result(first_rssi, y_data.tolist(), y_pred.tolist())
+
+        print('<<total metric result>>')
+        metrics.show_all_metrics_result(total_rssi, total_label, total_pred)
 
 
+def setting(model_config, checkpoint_path):
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    nn_model = None
+    _, test_dataloader, _ = data_loader.load_path_loss_with_detail_dataset(input_dir=model_config['input_dir'],
+                                                                           model_type=model_config['model'],
+                                                                           num_workers=model_config['num_workers'],
+                                                                           batch_size=model_config['batch_size'],
+                                                                           shuffle=model_config['shuffle'],
+                                                                           input_size=model_config['input_size'] if
+                                                                           model_config['model'] == 'FFNN' else model_config['sequence_length'])
+    if model_config['model'] == 'FFNN':
+        if 'layer' in model_config:
+            nn_model = model.VanillaNetworkCustom(model_config['input_size'], activation=model_config['activation'],
+                                                  layer=model_config['layer'])
+        else:
+            nn_model = model.VanillaNetwork(model_config['input_size'], activation=model_config['activation'])
+        if device:
+            nn_model = nn_model.cuda()
+    elif model_config['model'] == 'RNN' or model_config['model'] == 'CNNRNN':
+        if 'recurrent_model' in model_config:
+            if 'bidirectional' in model_config:
+                nn_model = model.VanillaRecurrentNetwork(model_config['input_size'],
+                                                         activation=model_config['activation'],
+                                                         recurrent_model=model_config['recurrent_model'],
+                                                         bidirectional=model_config['bidirectional'])
+            else:
+                nn_model = model.VanillaRecurrentNetwork(model_config['input_size'],
+                                                         activation=model_config['activation'],
+                                                         recurrent_model=model_config['recurrent_model'])
+        else:
+            nn_model = model.VanillaRecurrentNetwork(model_config['input_size'], activation=model_config['activation'])
+        if device:
+            nn_model = nn_model.cuda()
 
-
+    checkpoint = torch.load(checkpoint_path)
+    nn_model.load_state_dict(checkpoint['model_state_dict'])
+    test(model_config=model_config, nn_model=nn_model, dataloader=test_dataloader, device=device)
 
 if __name__ == '__main__':
-    # parameters
-    input_size = 8
-    batch_size = 64
-    checkpoint_path = 'checkpoints/model_adadelta_mse_epoch_529.pt'
-    valid_data_dir = 'dataset/pathloss_v1_valid_cs.csv'
-
+    checkpoint_path = 'checkpoints_v2/testcase_configuration_cnnrnn_adamw_001_epoch_1449.pt'
     configure = {
     "model": "RNN",
     "criterion": "MSELoss",
@@ -61,5 +105,4 @@ if __name__ == '__main__':
     "shuffle": True,
     "num_workers": 8
   }
-    test(model_config=model_config, nn_model=nn_model, dataloader=test_dataloader, device=device, writer=writer,
-         epoch=epoch)
+    setting(configure, checkpoint_path)
