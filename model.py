@@ -108,6 +108,12 @@ def model_load(model_configure):
         else:
             nn_model = VanillaRecurrentNetwork(model_configure['input_size'],
                                                activiation=model_configure['activation'])
+    elif model_configure['model'] == 'CNNRNN':
+        if 'recurrent_model' in model_configure:
+            pass
+        else:
+            nn_model = VanillaCNNRNNNetwork(model_configure['input_size'],
+                                            activation=model_configure['activation'])
     nn_model = nn_model.cuda()
 
     if 'checkpoint_path' in model_configure:
