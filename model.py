@@ -98,6 +98,25 @@ class VanillaCNNRNNNetwork(nn.Module):
         return out
 
 
+def model_load(model_configure):
+    nn_model = None
+    if model_configure['model'] == 'FFNN':
+        pass
+    elif model_configure['model'] == 'RNN':
+        if 'recurrent_model' in model_configure:
+            pass
+        else:
+            nn_model = VanillaRecurrentNetwork(model_configure['input_size'],
+                                               activiation=model_configure['activation'])
+    nn_model = nn_model.cuda()
+
+    if 'checkpoint_path' in model_configure:
+        checkpoint = torch.load(model_configure['checkpoint_path'])
+        nn_model.load_state_dict(checkpoint['model_state_dict'])
+
+    return nn_model
+
+
 if __name__ == '__main__':
     kind = 'CNNRNN'
     if kind == 'ANN':
