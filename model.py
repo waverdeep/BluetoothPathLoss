@@ -4,25 +4,6 @@ from torch.autograd import Variable
 import model_config
 
 
-class VanillaNetworkCustom(nn.Module):
-    def __init__(self, input_size=8, activation='PReLU', layer=[64, 128, 64, 1]):
-        super(VanillaNetworkCustom, self).__init__()
-        self.activation = activation
-        layer.insert(0, input_size)
-        modules = []
-        for grip in range(len(layer)-1):
-            modules.append(nn.Linear(layer[grip], layer[grip+1]))
-
-            if (grip + 1) != len(layer):
-                modules.append(nn.Dropout(0.3))
-                modules.append(model_config.set_activation(self.activation))
-
-        self.linear_relu_stack = nn.Sequential(*modules)
-
-    def forward(self, x):
-        return self.linear_relu_stack(x)
-
-
 class VanillaNetwork(nn.Module):
     def __init__(self, input_size=8, activation='PReLU'):
         super(VanillaNetwork, self).__init__()
@@ -69,16 +50,17 @@ class VanillaRecurrentNetwork(nn.Module):
         return self.linear_relu_stack(output[:, -1, :])
 
 
-class VanillaCNNRNNNetwork(nn.Module):
+class VanillaCRNNNetwork(nn.Module):
     def __init__(self, input_size=8, recurrent_model='LSTM', activation='PReLU', bidirectional=False):
-        super(VanillaCNNRNNNetwork, self).__init__()
+        super(VanillaCRNNNetwork, self).__init__()
         # convolution
         self.num_layers = 1
         self.hidden_size = 256
         self.conv1d_layer = nn.Conv1d(8, 8, 3)
         self.activation = activation
-        self.lstm_layer = nn.LSTM(input_size=input_size, hidden_size=self.hidden_size, num_layers=self.num_layers,
-                                  batch_first=True)
+        self.lstm_layer = model_config.set_recurrent_layer(name=recurrent_model, input_size=input_size,
+                                                           hidden_size=self.hidden_size, num_layers=self.num_layers,
+                                                           batch_first=True, bidirectional=bidirectional)
         self.linear_layer1 = nn.Linear(256, 64)
         self.dropout = nn.Dropout(0.3)
         self.activation = model_config.set_activation(self.activation)
@@ -86,35 +68,34 @@ class VanillaCNNRNNNetwork(nn.Module):
 
     def forward(self, x):
         out = self.conv1d_layer(x)
-        print(out.shape)
+        # print(out.shape)
         out = out.transpose(1, 2)
         h_0 = Variable(torch.zeros(
             self.num_layers, x.size(0), self.hidden_size)).cuda()
         c_0 = Variable(torch.zeros(
             self.num_layers, x.size(0), self.hidden_size)).cuda()
         out, (h_out, _) = self.lstm_layer(out, (h_0, c_0))
-        out = self.activation(self.dropout(self.linear_layer1(out)))
+        # print('lstm output shape :', out.shape)
+        out = self.activation(self.dropout(self.linear_layer1(out[:, -1, :])))
         out = self.linear_layer2(out)
         return out
 
 
 def model_load(model_configure):
     nn_model = None
-    if model_configure['model'] == 'FFNN':
-        pass
+    if model_configure['model'] == 'DNN':
+        nn_model = VanillaNetwork(model_configure['input_size'], activation=model_configure['activation'])
     elif model_configure['model'] == 'RNN':
-        if 'recurrent_model' in model_configure:
-            pass
-        else:
-            nn_model = VanillaRecurrentNetwork(model_configure['input_size'],
-                                               activiation=model_configure['activation'])
-    elif model_configure['model'] == 'CNNRNN':
-        if 'recurrent_model' in model_configure:
-            pass
-        else:
-            nn_model = VanillaCNNRNNNetwork(model_configure['input_size'],
-                                            activation=model_configure['activation'])
-    nn_model = nn_model.cuda()
+        nn_model = VanillaRecurrentNetwork(model_configure['input_size'],
+                                           activation=model_configure['activation'],
+                                           recurrent_model=model_config['recurrent_model'])
+    elif model_configure['model'] == 'CRNN':
+        nn_model = VanillaCRNNNetwork(input_size=model_configure['input_size'],
+                                      recurrent_model=model_configure['recurrent_model'],
+                                      activation=model_configure['activation'])
+
+    if model_configure['cuda']:
+        nn_model = nn_model.cuda()
 
     if 'checkpoint_path' in model_configure:
         checkpoint = torch.load(model_configure['checkpoint_path'])
@@ -130,11 +111,12 @@ if __name__ == '__main__':
     elif kind == 'RNN':
         model = VanillaRecurrentNetwork()
     elif kind == 'CNNRNN':
-        model = VanillaCNNRNNNetwork()
+        model = VanillaCRNNNetwork().cuda()
     print("Model structure: ", model, "\n\n")
     for name, param in model.named_parameters():
         print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
 
     # model test
-    x = torch.empty(62, 8, 15)
-    model(x)
+    x_data = torch.empty(1, 8, 15).cuda()
+    pred = model(x_data)
+    print('pred : ', pred.shape)
