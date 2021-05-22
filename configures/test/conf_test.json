@@ -1,0 +1,16 @@
+[
+  {
+    "model": "CNNRNN",
+    "criterion": "MSELoss",
+    "optimizer": "AdamW","activation": "ReLU",
+    "learning_rate": 0.001,
+    "cuda": true,
+    "batch_size": 512,
+    "epoch": 800,
+    "input_size": 8,
+    "sequence_length": 15,
+    "input_dir": "dataset/v1_scaled",
+    "shuffle": true,
+    "num_workers": 8
+  }
+]
