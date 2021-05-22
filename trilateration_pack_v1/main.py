@@ -1,8 +1,9 @@
 import tril_location
 import math
+import matplotlib.pyplot as plt
 
 
-if __name__ == '__main__':
+def prev_v1():
     point1 = tril_location.Point(0, 0, math.sqrt(50))
     point2 = tril_location.Point(10, 0, math.sqrt(50))
     point3 = tril_location.Point(5, 10, 5)
@@ -101,6 +102,37 @@ if __name__ == '__main__':
     print(point_m4_pred.get_distance(point_m1))
     print(point_m4_pred.get_distance(point_m3))
     print(point_m4_pred.get_distance(point_m4))
+
+
+def show_position(ball, pred):
+    plt.scatter(ball.x, ball.y, c='r')
+    plt.scatter(pred.x, pred.y, c='b')
+    plt.show()
+
+
+if __name__ == '__main__':
+    ball = tril_location.Point(4, 3)
+    pol_a = tril_location.Point(0, 0)
+    print('pol_a distance : ', pol_a.get_distance(ball))
+    pol_b = tril_location.Point(10, 0)
+    print('pol_b distance : ', pol_b.get_distance(ball))
+    pol_c = tril_location.Point(10, 9)
+    print('pol_c distance : ', pol_c.get_distance(ball))
+
+    # pol_a.distance  -= 1
+
+    tril = tril_location.TrilaterationInCoord(pol_a, pol_b, pol_c)
+    output = tril.get_trilateration()
+    print('---ball position---')
+    output.out()
+
+    show_position(ball, output)
+
+
+
+
+
+
 
 
 
