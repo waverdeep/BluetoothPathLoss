@@ -4,7 +4,7 @@ import tool.path_loss as path_loss
 import glob
 import os
 import numpy as np
-from sklearn.externals import joblib
+
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import RobustScaler
 from sklearn.preprocessing import StandardScaler
@@ -43,17 +43,17 @@ def set_scaler(name):
 
 def fit_selected_scaler(addition_dataset, scaler='None'):
     tied_scaler = None
-    if scaler != 'None' and scaler == 'MinMaxScaler':
-        temp = []
-        tied_scaler = set_scaler(scaler)
-        for pack in addition_dataset:
-            for line in pack:
-                temp.append(line)
-        temp = np.array(temp)
-        temp = np.delete(temp, 0, axis=1)
-        tied_scaler.fit(temp)
-    save_scaler_name = './{}_saved.pkl'.format(scaler)
-    joblib.dump(tied_scaler, save_scaler_name)
+    # if scaler != 'None' and scaler == 'MinMaxScaler':
+    #     temp = []
+    #     tied_scaler = set_scaler(scaler)
+    #     for pack in addition_dataset:
+    #         for line in pack:
+    #             temp.append(line)
+    #     temp = np.array(temp)
+    #     temp = np.delete(temp, 0, axis=1)
+    #     tied_scaler.fit(temp)
+    # save_scaler_name = './{}_saved.pkl'.format(scaler)
+    # joblib.dump(tied_scaler, save_scaler_name)
     return tied_scaler
 
 
