@@ -2,14 +2,9 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_percentage_error
 from frechetdist import frdist
 import matplotlib.pyplot as plt
-
-
-def mean_absolute_percentage_error(y_data, pred):
-    y_data = np.array(y_data)
-    pred = np.array(pred)
-    return np.mean(np.abs((y_data-pred)/y_data))*100
 
 
 def mean_percentage_error(y_data, pred):
@@ -63,7 +58,8 @@ def show_all_metrics_result(rssi, y_data, pred):
     mae_result = mean_absolute_error(y_data, pred)
     max_error_result = max_error_distance(y_data, pred)
     min_error_result = min_error_distance(y_data, pred)
-    # frechet_result = frechet_distance(rssi, y_data, pred)
+    mape_result = mean_absolute_percentage_error(y_data, pred)
+
 
     print('MSE : {}'.format(mse_result))
     print('RMSE : {}'.format(rmse_result))
