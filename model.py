@@ -87,11 +87,9 @@ def model_load(model_configure):
         nn_model = VanillaNetwork(model_configure['input_size'], activation=model_configure['activation'])
     elif model_configure['model'] == 'RNN':
         nn_model = VanillaRecurrentNetwork(model_configure['input_size'],
-                                           activation=model_configure['activation'],
-                                           recurrent_model=model_config['recurrent_model'])
+                                           activation=model_configure['activation'])
     elif model_configure['model'] == 'CRNN':
         nn_model = VanillaCRNNNetwork(input_size=model_configure['input_size'],
-                                      recurrent_model=model_configure['recurrent_model'],
                                       activation=model_configure['activation'])
 
     if model_configure['cuda']:
