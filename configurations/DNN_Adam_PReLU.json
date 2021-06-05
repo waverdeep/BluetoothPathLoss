@@ -68,5 +68,5 @@
     "input_dir": "dataset/v1_scaled",
     "shuffle": true,
     "num_workers": 8
-  },
+  }
 ]
