@@ -17,6 +17,11 @@ class Point:
             self.distance = temp
         return temp
 
+    def out(self):
+        print('x : ', self.x)
+        print('y : ', self.y)
+        print('distance : ', self.distance)
+
 
 class TrilaterationInCoord:
     def __init__(self, point1, point2, point3):
@@ -32,6 +37,9 @@ class TrilaterationInCoord:
         t = (math.pow(self.point1.x, 2) - math.pow(self.point2.x, 2)
              + math.pow(self.point1.y, 2) - math.pow(self.point2.y, 2)
              + math.pow(self.point2.distance, 2) - math.pow(self.point1.distance, 2)) / 2
+
+        print(s)
+        print(t)
 
         y = ((t*(self.point2.x - self.point3.x)) -
              (s*(self.point2.x - self.point1.x))) / (((self.point1.y - self.point2.y)*(self.point2.x - self.point3.x)) -
