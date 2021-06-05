@@ -1,6 +1,6 @@
 import math
 from itertools import combinations
-
+import time
 
 class Point:
     def __init__(self, x, y):
@@ -77,11 +77,11 @@ def get_trilateration(circles):
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     circles = []
-    circles.append(Circle(Point(0, 0), 4.5))
-    circles.append(Circle(Point(10, 0), 6.208))
-    circles.append(Circle(Point(0, 9), 6.7111))
-    circles.append(Circle(Point(10, 9), 7.9852))
+    circles.append(Circle(Point(0, 0), 2.05))
+    circles.append(Circle(Point(22, 0), 2.37))
+    circles.append(Circle(Point(0, 50), 2.11))
 
     flag = True
     while flag:
@@ -96,4 +96,6 @@ if __name__ == '__main__':
             print('center x : ', math.ceil(output.x))
             print('center y : ', math.ceil(output.y))
             break
+
+    print(time.time() - start_time)
 
