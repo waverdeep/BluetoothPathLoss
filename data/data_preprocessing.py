@@ -84,13 +84,15 @@ def get_train_test_valid():
 
 def get_addition_dataset(input_dir, config):
     file_list = get_all_file_path(input_dir=input_dir, file_extension='csv')
+    file_list.sort()
+    print(file_list)
     target_dataset = []
     addition_dataset = []
 
     for file in file_list:
         temp = pd.read_csv(file)
-        temp = temp[temp['mac'] == config['device_id']]
-        temp = temp.drop(['mac', 'type'], axis=1)
+        # temp = temp[temp['mac'] == config['device_id']]
+        temp = temp.drop([ 'mac', 'type'], axis=1)
         target_dataset.append(temp)
 
     for item in target_dataset:
@@ -105,6 +107,7 @@ def get_addition_dataset(input_dir, config):
             data.append(config.get('environment'))
             if config['use_fspl']:
                 data.append(path_loss.get_distance_with_rssi_fspl(data[1]))
+            del data[0] # inference
             temp.append(data)
         addition_dataset.append(temp)
 
@@ -132,12 +135,12 @@ def get_addition_dataset(input_dir, config):
 # 04:ee:03:74:ae:dd -> 골프공
 # f8:8a:5e:2d:80:f4 -> R1
 if __name__ == '__main__':
-    input_dir = '../dataset/v2_timeline'
+    input_dir = '../dataset/v3_test_10_20'
     device_id = 'f8:8a:5e:2d:80:f4'
     config = {
         'tx_power': 5, 'tx_height': 2, 'rx_height': 0.01, 'tx_antenna_gain': -1.47,
         'rx_antenna_gain': -1, 'environment': 1, 'device_id': device_id,
-        'use_fspl': True, 'save_dir': '../dataset/v1_scaled/', 'scaler': 'None'
+        'use_fspl': True, 'save_dir': '../dataset/v3_test_convert_10_20/', 'scaler': 'None'
     }
     get_addition_dataset(input_dir=input_dir, config=config)
 
