@@ -1,6 +1,7 @@
 import math
 from itertools import combinations
 import time
+import positioning_tour
 
 class Point:
     def __init__(self, x, y):
@@ -76,12 +77,20 @@ def get_trilateration(circles):
     return "error"
 
 
+model_configure = {"model": "CRNN", "criterion": "MSELoss","optimizer": "Adam","activation": "LeakyReLU",
+                   "learning_rate": 0.001, "cuda": True, "batch_size": 512, "epoch": 800, "input_size": 8,
+                   "sequence_length": 15, "input_dir": "dataset/v1_scaled_mm", "shuffle": True, "num_workers": 8,
+                   'checkpoint_path': '../checkpoints_all_v3/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_769.pt',
+                   'test_data_path': 'dataset/v3_test_convert', 'scaler_path': 'data/MinMaxScaler_saved.pkl'}
+# ../checkpoints_all_v3/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_769.pt
+# ../checkpoints_all_v3_re/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_829.pt
+
 if __name__ == '__main__':
     start_time = time.time()
     circles = []
-    circles.append(Circle(Point(0, 0), 2.05))
-    circles.append(Circle(Point(22, 0), 2.37))
-    circles.append(Circle(Point(0, 50), 2.11))
+    circles.append(Circle(Point(0, 0), positioning_tour.inference(model_configure, '../dataset/v3_test_convert_10_20/dataset_0.csv')))
+    circles.append(Circle(Point(30, 0), positioning_tour.inference(model_configure, '../dataset/v3_test_convert_10_20/dataset_1.csv')))
+    circles.append(Circle(Point(0, 30), positioning_tour.inference(model_configure, '../dataset/v3_test_convert_10_20/dataset_2.csv')))
 
     flag = True
     while flag:
