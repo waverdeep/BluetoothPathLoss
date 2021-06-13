@@ -96,7 +96,7 @@ def test(model_config, nn_model, dataloader, device, writer, epoch):
         return {epoch + 1: [test_mae_score, test_mse_score, test_rmse_score, test_r2_score]}
 
 
-def train(model_config, count, writer_path, message, checkpoint_dir):
+def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=None):
     saver = {}
     device = model_config['cuda']
     num_epochs = model_config['epoch']
@@ -111,6 +111,9 @@ def train(model_config, count, writer_path, message, checkpoint_dir):
                                                                                                          shuffle=model_config['shuffle'],
                                                                                                          input_size=size)
     nn_model = model.model_load(model_configure=model_config)
+    if checkpoint is not None:
+        prev_checkpoint = torch.load(checkpoint)
+        nn_model.load_state_dict(prev_checkpoint['model_state_dict'])
     criterion = optimizer.set_criterion(model_config['criterion'])
     if device:
         criterion = criterion.cuda()
@@ -156,12 +159,11 @@ def train(model_config, count, writer_path, message, checkpoint_dir):
 
 
 if __name__ == '__main__':
-    file_path = 'configurations'
-    checkpoint_dir = 'checkpoints_all'
-    writer_path = 'runs_all_v1'
+    file_path = 'configurations/configurations_v3'
+    checkpoint_dir = 'checkpoints_all_v3_re'
+    writer_path = 'runs_all_v3_re'
+    checkpoint = 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
     file_list = data_preprocessing.get_all_file_path(file_path, file_extension='json')
-    # 7
-    file_list = file_list[20:]
     for file in file_list:
         print(file)
         with open(file) as f:
@@ -172,6 +174,6 @@ if __name__ == '__main__':
             message = "{}_{}_{}_{}_sl{}".format(data['model'], data['optimizer'],
                                                         data['activation'], data['learning_rate'],
                                                         data['sequence_length'])
-            train(model_config=data, count=idx, writer_path=writer_path, message=message, checkpoint_dir=checkpoint_dir)
+            train(model_config=data, count=idx, writer_path=writer_path, message=message, checkpoint_dir=checkpoint_dir, checkpoint=checkpoint)
 
 
