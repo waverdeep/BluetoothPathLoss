@@ -80,7 +80,7 @@ def get_trilateration(circles):
 model_configure = {"model": "CRNN", "criterion": "MSELoss","optimizer": "Adam","activation": "LeakyReLU",
                    "learning_rate": 0.001, "cuda": True, "batch_size": 512, "epoch": 800, "input_size": 8,
                    "sequence_length": 15, "input_dir": "dataset/v1_scaled_mm", "shuffle": True, "num_workers": 8,
-                   'checkpoint_path': '../checkpoints_all_v3/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_769.pt',
+                   'checkpoint_path': '../checkpoints_all_v4/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_879.pt',
                    'test_data_path': 'dataset/v3_test_convert', 'scaler_path': 'data/MinMaxScaler_saved.pkl'}
 # ../checkpoints_all_v3/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_769.pt
 # ../checkpoints_all_v3_re/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_829.pt
@@ -88,9 +88,13 @@ model_configure = {"model": "CRNN", "criterion": "MSELoss","optimizer": "Adam","
 if __name__ == '__main__':
     start_time = time.time()
     circles = []
-    circles.append(Circle(Point(0, 0), positioning_tour.inference(model_configure, '../dataset/v3_test_convert_10_20/dataset_0.csv')))
-    circles.append(Circle(Point(30, 0), positioning_tour.inference(model_configure, '../dataset/v3_test_convert_10_20/dataset_1.csv')))
-    circles.append(Circle(Point(0, 30), positioning_tour.inference(model_configure, '../dataset/v3_test_convert_10_20/dataset_2.csv')))
+    circles.append(Circle(Point(0, 0), positioning_tour.inference(model_configure, '../dataset/v4_test/dk_convert_5_5/dataset_0.csv')))
+    circles.append(Circle(Point(30, 0), positioning_tour.inference(model_configure, '../dataset/v4_test/dk_convert_5_5/dataset_1.csv')))
+    circles.append(Circle(Point(0, 30), positioning_tour.inference(model_configure, '../dataset/v4_test/dk_convert_5_5/dataset_2.csv')))
+
+    # circles.append(Circle(Point(0, 0), 30.413813))
+    # circles.append(Circle(Point(30, 0), 39.051248))
+    # circles.append(Circle(Point(0, 30), 5.0))
 
     flag = True
     while flag:
