@@ -2,8 +2,14 @@ import math
 import numpy as np
 
 
-def get_distance_with_rssi_fspl(rssi, freq=2412 * math.pow(10, 6)):
-    return math.pow(10, (-rssi - 20 * math.log10(freq) + 147.55) / 20)
+def get_distance_with_rssi_fspl(rssi, freq=2412):
+    return math.pow(10, (-rssi - 20 * math.log10(freq) + 27.55) / 20)
+    # return math.pow(10, (-rssi - 20 * math.log10(freq) + 147.55) / 20)
+
+
+def get_rssi_with_distance_fspl(distance, freq=2412):
+    result = 20*math.log10(distance)+20*math.log10(freq)-27.55
+    return -result
 
 
 def get_distance_with_rssi(rssi, tx_power, free_space=2):
