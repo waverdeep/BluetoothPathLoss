@@ -209,7 +209,7 @@ if __name__ == '__main__':
         'shuffle': True, 'num_workers': 8,
     }
 
-    file_list = data_preprocessing.get_all_file_path('../configures/configurations_v1/', file_extension='json')
+    file_list = data_preprocessing.get_all_file_path('../configurations/configures/configurations_v1/', file_extension='json')
     for file in file_list:
         with open(file) as f:
             json_data = json.load(f)
