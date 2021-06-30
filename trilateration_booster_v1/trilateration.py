@@ -2,6 +2,7 @@ import math
 from itertools import combinations
 import time
 import positioning_tour
+import tool.path_loss
 
 class Point:
     def __init__(self, x, y):
@@ -77,6 +78,13 @@ def get_trilateration(circles):
     return "error"
 
 
+def increase_distance(distance):
+    rssi = tool.path_loss.get_rssi_with_distance_fspl(distance)
+    rssi = rssi - 1
+    new_distance = tool.path_loss.get_distance_with_rssi_fspl(rssi)
+    return new_distance
+
+
 model_configure = {"model": "CRNN", "criterion": "MSELoss","optimizer": "Adam","activation": "LeakyReLU",
                    "learning_rate": 0.001, "cuda": True, "batch_size": 512, "epoch": 800, "input_size": 8,
                    "sequence_length": 15, "input_dir": "dataset/v1_scaled_mm", "shuffle": True, "num_workers": 8,
@@ -104,7 +112,7 @@ if __name__ == '__main__':
         elif output == 'ld':
             print('want long distance')
             for i in range(len(circles)):
-                circles[i].radius += 0.1
+                circles[i].radius = increase_distance(circles[i].radius)
         else:
             print('center x : ', math.ceil(output.x))
             print('center y : ', math.ceil(output.y))
