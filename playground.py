@@ -155,14 +155,14 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
     use_tensorboard.close_tensorboard_writer(writer)
 
     saver = pd.DataFrame(saver)
-    saver.to_csv('checkpoint_all_output/{}_{}.csv'.format(message, str(count).zfill(3)))
+    saver.to_csv('{}/{}_{}.csv'.format(checkpoint_dir, message, str(count).zfill(3)))
 
 
 if __name__ == '__main__':
     file_path = 'configurations/configurations_v3'
-    checkpoint_dir = 'checkpoints_all_v3_re'
-    writer_path = 'runs_all_v3_re'
-    checkpoint = 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
+    checkpoint_dir = 'configurations/type_data_size/checkpoints_size_50'
+    writer_path = 'runs_size_50'
+    checkpoint = None # 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
     file_list = data_preprocessing.get_all_file_path(file_path, file_extension='json')
     for file in file_list:
         print(file)

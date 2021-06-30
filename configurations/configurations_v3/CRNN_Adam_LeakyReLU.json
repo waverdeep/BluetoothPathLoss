@@ -9,7 +9,7 @@
     "epoch": 1000,
     "input_size": 8,
     "sequence_length": 15,
-    "input_dir": "dataset/v3_new",
+    "input_dir": "dataset/v4_new_merge",
     "shuffle": true,
     "num_workers": 8
   },
@@ -23,7 +23,7 @@
     "epoch": 1000,
     "input_size": 8,
     "sequence_length": 15,
-    "input_dir": "dataset/v3_new",
+    "input_dir": "dataset/v4_new_merge",
     "shuffle": true,
     "num_workers": 8
   }

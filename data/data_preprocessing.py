@@ -135,12 +135,12 @@ def get_addition_dataset(input_dir, config):
 # 04:ee:03:74:ae:dd -> 골프공
 # f8:8a:5e:2d:80:f4 -> R1
 if __name__ == '__main__':
-    input_dir = '../dataset/v3_test_10_20'
+    input_dir = '../dataset/v4_test/dk_5_5'
     device_id = 'f8:8a:5e:2d:80:f4'
     config = {
-        'tx_power': 5, 'tx_height': 2, 'rx_height': 0.01, 'tx_antenna_gain': -1.47,
+        'tx_power': 8, 'tx_height': 2, 'rx_height': 0.01, 'tx_antenna_gain': -1,
         'rx_antenna_gain': -1, 'environment': 1, 'device_id': device_id,
-        'use_fspl': True, 'save_dir': '../dataset/v3_test_convert_10_20/', 'scaler': 'None'
+        'use_fspl': True, 'save_dir': '../dataset/v4_test/dk_convert_5_5/', 'scaler': 'None'
     }
     get_addition_dataset(input_dir=input_dir, config=config)
 
