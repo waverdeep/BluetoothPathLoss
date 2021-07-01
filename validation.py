@@ -2,8 +2,17 @@ import torch
 from data import data_loader
 import model
 from tool import metrics
-torch.manual_seed(42)
 import time
+# randomness
+random_seed = 42
+np.random.seed(random_seed)
+random.seed(random_seed)
+torch.manual_seed(random_seed)
+# 연산속도가 느려질 수 있음
+# torch.backends.cudnn.deterministic = True
+# torch.backends.cudnn.benchmark = False
+torch.cuda.manual_seed(random_seed)
+torch.cuda.manual_seed_all(random_seed) # if use multi-GPU
 
 
 def test(model_config, nn_model, dataloader, device):

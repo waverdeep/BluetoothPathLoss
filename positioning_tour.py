@@ -4,7 +4,17 @@ import model
 import pandas as pd
 import numpy as np
 from data import data_loader
-from scipy.stats import mode
+import random
+# randomness
+random_seed = 42
+np.random.seed(random_seed)
+random.seed(random_seed)
+torch.manual_seed(random_seed)
+# 연산속도가 느려질 수 있음
+# torch.backends.cudnn.deterministic = True
+# torch.backends.cudnn.benchmark = False
+torch.cuda.manual_seed(random_seed)
+torch.cuda.manual_seed_all(random_seed) # if use multi-GPU
 
 model_configure = {"model": "CRNN", "criterion": "MSELoss","optimizer": "Adam","activation": "LeakyReLU",
                    "learning_rate": 0.001, "cuda": True, "batch_size": 512, "epoch": 800, "input_size": 8,
