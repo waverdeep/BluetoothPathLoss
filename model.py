@@ -5,7 +5,7 @@ import model_config
 
 
 class VanillaNetwork(nn.Module):
-    def __init__(self, input_size=8, activation='PReLU'):
+    def __init__(self, input_size=7, activation='PReLU'):
         super(VanillaNetwork, self).__init__()
         self.activation = activation
         self.linear_relu_stack = nn.Sequential(
@@ -103,18 +103,26 @@ def model_load(model_configure):
 
 
 if __name__ == '__main__':
-    kind = 'CNNRNN'
-    if kind == 'ANN':
-        model = VanillaNetwork()
-    elif kind == 'RNN':
+    kind = 'DNN'
+    if kind == 'DNN':
+        model = VanillaNetwork().cuda()
+    elif kind == 'LSTM':
         model = VanillaRecurrentNetwork()
-    elif kind == 'CNNRNN':
+    elif kind == 'CRNN':
         model = VanillaCRNNNetwork().cuda()
     print("Model structure: ", model, "\n\n")
     for name, param in model.named_parameters():
         print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
 
     # model test
-    x_data = torch.empty(1, 8, 15).cuda()
-    pred = model(x_data)
-    print('pred : ', pred.shape)
+
+    if kind == 'DNN':
+        x_data = torch.empty(7,).cuda()
+        pred = model(x_data)
+        print("pred : ", pred.shape)
+    elif kind == 'LSTM':
+        pass
+    elif kind == 'CRNN':
+        x_data = torch.empty(1, 8, 15).cuda()
+        pred = model(x_data)
+        print('pred : ', pred.shape)
