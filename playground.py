@@ -6,11 +6,12 @@ import tool.optimizer as optimizer
 import data.data_preprocessing as data_preprocessing
 import json
 from tool import metrics
-torch.manual_seed(42)
 import pandas as pd
 from tool import use_tensorboard
-
-from ast import literal_eval
+# randomness
+torch.manual_seed(42)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 
 
 def sub_train(model_config, nn_model, dataloader, device, writer, epoch, optimizer, criterion):
