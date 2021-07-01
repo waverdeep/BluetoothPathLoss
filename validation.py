@@ -3,6 +3,8 @@ from data import data_loader
 import model
 from tool import metrics
 import time
+import numpy as np
+import random
 # randomness
 random_seed = 42
 np.random.seed(random_seed)
