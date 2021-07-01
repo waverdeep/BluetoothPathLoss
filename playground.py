@@ -159,8 +159,8 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
 
 
 if __name__ == '__main__':
-    file_path = 'configurations/configurations_v3'
-    checkpoint_dir = 'configurations/type_data_size/checkpoints_size_50'
+    file_path = 'old/configurations_old/configurations_v3'
+    checkpoint_dir = 'old/configurations_old/type_data_size/checkpoints_size_50'
     writer_path = 'runs_size_50'
     checkpoint = None # 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
     file_list = data_preprocessing.get_all_file_path(file_path, file_extension='json')

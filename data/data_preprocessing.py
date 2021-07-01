@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
 #### not used #############################################################################################
 def get_train_test_valid():
-    data = pd.read_csv('../dataset/v1_timeline')
+    data = pd.read_csv('../dataset/v1/v1_timeline')
     data2 = pd.read_csv('dataset/2021_04_15/rssi_s.csv')
 
     result = pd.concat([data, data2])

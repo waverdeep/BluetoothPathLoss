@@ -96,9 +96,12 @@ model_configure = {"model": "CRNN", "criterion": "MSELoss","optimizer": "Adam","
 if __name__ == '__main__':
     start_time = time.time()
     circles = []
-    circles.append(Circle(Point(0, 0), positioning_tour.inference(model_configure, '../dataset/v4_test/dk_convert_5_5/dataset_0.csv')))
-    circles.append(Circle(Point(30, 0), positioning_tour.inference(model_configure, '../dataset/v4_test/dk_convert_5_5/dataset_1.csv')))
-    circles.append(Circle(Point(0, 30), positioning_tour.inference(model_configure, '../dataset/v4_test/dk_convert_5_5/dataset_2.csv')))
+    circles.append(Circle(Point(0, 0), positioning_tour.inference(model_configure,
+                                                                  '../dataset/v4/v4_test/dk_convert_5_5/dataset_0.csv')))
+    circles.append(Circle(Point(30, 0), positioning_tour.inference(model_configure,
+                                                                   '../dataset/v4/v4_test/dk_convert_5_5/dataset_1.csv')))
+    circles.append(Circle(Point(0, 30), positioning_tour.inference(model_configure,
+                                                                   '../dataset/v4/v4_test/dk_convert_5_5/dataset_2.csv')))
 
     # circles.append(Circle(Point(0, 0), 30.413813))
     # circles.append(Circle(Point(30, 0), 39.051248))

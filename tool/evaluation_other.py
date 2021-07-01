@@ -3,7 +3,7 @@ import tools
 import tool.path_loss as path_loss
 
 
-data = pd.read_csv('../dataset/v1_custom/pathloss_v1_valid_cs.csv')
+data = pd.read_csv('../dataset/v1/v1_custom/pathloss_v1_valid_cs.csv')
 fspl_path_loss_line = []
 for index, row in data.iterrows():
     row = row.tolist()

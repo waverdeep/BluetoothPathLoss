@@ -119,14 +119,15 @@ def load_path_loss_with_detail_inference_dataset(input_filepath, model_type='RNN
 
 
 if __name__ == '__main__':
-    train_dataloader, test_dataloader, validation_dataloader = load_path_loss_with_detail_dataset('../dataset/v1_scaled', model_type='RNN')
+    train_dataloader, test_dataloader, validation_dataloader = load_path_loss_with_detail_dataset(
+        '../dataset/v1/v1_scaled', model_type='RNN')
     print('train_dataloader : ', len(train_dataloader))
     for data in train_dataloader:
         print(data[:][0].shape)
         print(data[:][1].shape)
         break
 
-    inference_dataloader = load_path_loss_with_detail_inference_dataset('../dataset/pol_test_v1/POL_A_cs_6_20.csv')
+    inference_dataloader = load_path_loss_with_detail_inference_dataset('../dataset/v1/pol_test_v1/POL_A_cs_6_20.csv')
     for data in inference_dataloader:
         print(data.shape)
         break
