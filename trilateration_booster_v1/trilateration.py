@@ -1,8 +1,9 @@
 import math
 from itertools import combinations
 import time
-import positioning_tour
-import tool.path_loss
+import positioning
+import model.model_pathloss as model_pathloss
+
 
 class Point:
     def __init__(self, x, y):
@@ -79,9 +80,9 @@ def get_trilateration(circles):
 
 
 def increase_distance(distance):
-    rssi = tool.path_loss.get_rssi_with_distance_fspl(distance)
+    rssi = model_pathloss.fspl_model_inverse(distance)
     rssi = rssi - 1
-    new_distance = tool.path_loss.get_distance_with_rssi_fspl(rssi)
+    new_distance = model_pathloss.fspl_model(rssi)
     return new_distance
 
 
@@ -96,11 +97,11 @@ model_configure = {"model": "CRNN", "criterion": "MSELoss","optimizer": "Adam","
 if __name__ == '__main__':
     start_time = time.time()
     circles = []
-    circles.append(Circle(Point(0, 0), positioning_tour.inference(model_configure,
+    circles.append(Circle(Point(0, 0), positioning.inference(model_configure,
                                                                   '../dataset/v4/v4_test/dk_convert_5_5/dataset_0.csv')))
-    circles.append(Circle(Point(30, 0), positioning_tour.inference(model_configure,
+    circles.append(Circle(Point(30, 0), positioning.inference(model_configure,
                                                                    '../dataset/v4/v4_test/dk_convert_5_5/dataset_1.csv')))
-    circles.append(Circle(Point(0, 30), positioning_tour.inference(model_configure,
+    circles.append(Circle(Point(0, 30), positioning.inference(model_configure,
                                                                    '../dataset/v4/v4_test/dk_convert_5_5/dataset_2.csv')))
 
     # circles.append(Circle(Point(0, 0), 30.413813))

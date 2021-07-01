@@ -81,7 +81,8 @@ if __name__ == '__main__':
     checkpoint_path = 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
     configure = {"model": "CRNN",
                  "criterion": "MSELoss",
-                 "optimizer": "Adam","activation": "LeakyReLU",
+                 "optimizer": "Adam",
+                 "activation": "LeakyReLU",
                  "learning_rate": 0.001,
                  "cuda": True,
                  "batch_size": 512,
