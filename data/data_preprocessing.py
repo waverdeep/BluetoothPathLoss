@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import tool.path_loss as path_loss
-import os
 import numpy as np
 import tool.file_io as file_io
 
@@ -31,8 +30,8 @@ def get_train_test_valid():
     valid.to_csv('dataset/2021_04_15/pathloss_v1_valid.csv', header=None, index=None)
 
 
-def get_addition_dataset(input_dir, config):
-    file_list = file_io.get_all_file_path(input_dir=input_dir, file_extension='csv')
+def get_addition_dataset(config):
+    file_list = file_io.get_all_file_path(input_dir=config['input_dir'], file_extension='csv')
     file_list.sort()
     print(file_list)
     target_dataset = []
@@ -60,36 +59,23 @@ def get_addition_dataset(input_dir, config):
             temp.append(data)
         addition_dataset.append(temp)
 
-    if config['scaler'] == 'None':
-        pass
-    else:
-        tied_scaler = fit_selected_scaler(addition_dataset=addition_dataset, scaler=config['scaler'])
-        for idx, item in enumerate(addition_dataset):
-            temp = np.array(item)
-            y_label = temp[:, 0]
-            y_label = np.expand_dims(y_label, axis=1)
-            print(y_label)
-            x_data = np.delete(temp, 0, axis=1)
-            x_data = tied_scaler.transform(x_data)
-            total = np.concatenate((y_label, x_data), axis=1)
-            addition_dataset[idx] = total
-
-
     for idx, item in enumerate(addition_dataset):
         temp = pd.DataFrame(item)
         file_io.create_directory(config['save_dir'])
         temp.to_csv('{}/dataset_{}.csv'.format(config['save_dir'], idx) , header=None, index=None)
 
 
-# 04:ee:03:74:ae:dd -> 골프공
-# f8:8a:5e:2d:80:f4 -> R1
 if __name__ == '__main__':
-    input_dir = '../dataset/v4_test/dk_5_5'
-    device_id = 'f8:8a:5e:2d:80:f4'
     config = {
-        'tx_power': 8, 'tx_height': 2, 'rx_height': 0.01, 'tx_antenna_gain': -1,
-        'rx_antenna_gain': -1, 'environment': 1, 'device_id': device_id,
-        'use_fspl': True, 'save_dir': '../dataset/v4_test/dk_convert_5_5/', 'scaler': 'None'
+        'input_dir': '../dataset/v4_test/dk_5_5',
+        'save_dir': '../dataset/v4_test/dk_convert_5_5/',
+        'tx_power': 8,
+        'rx_height': 2.0,
+        'tx_antenna_gain': -1,
+        'rx_antenna_gain': -1,
+        'covered': 1,
+        'device_id': 'f8:8a:5e:2d:80:f4', # optional
+        'use_fspl': True,
     }
-    get_addition_dataset(input_dir=input_dir, config=config)
+    get_addition_dataset(config=config)
 
