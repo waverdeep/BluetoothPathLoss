@@ -8,10 +8,14 @@ import json
 from tool import metrics
 import pandas as pd
 from tool import use_tensorboard
+import random
 # randomness
+np.random.seed(42)
+random.seed(42)
 torch.manual_seed(42)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
+# 연산속도가 느려질 수 있음
+# torch.backends.cudnn.deterministic = True
+# torch.backends.cudnn.benchmark = False
 
 
 def sub_train(model_config, nn_model, dataloader, device, writer, epoch, optimizer, criterion):
