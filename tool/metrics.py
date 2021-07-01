@@ -60,11 +60,11 @@ def show_all_metrics_result(rssi, y_data, pred):
     min_error_result = min_error_distance(y_data, pred)
     mape_result = mean_absolute_percentage_error(y_data, pred)
 
-
     print('MSE : {}'.format(mse_result))
     print('RMSE : {}'.format(rmse_result))
     print('R2 Score : {}'.format(r2_result))
     print('MAE : {}'.format(mae_result))
+    print('MAPE : {}'.format(mape_result))
     print('MAX_ERROR_DISTANCE : {}'.format(max_error_result))
     print('MIN_ERROR_DISTANCE : {}'.format(min_error_result))
     # print('FRECHET_DISTANCE : {}'.format(frechet_result))
