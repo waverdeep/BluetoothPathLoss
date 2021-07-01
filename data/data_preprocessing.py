@@ -1,60 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import tool.path_loss as path_loss
-import glob
 import os
 import numpy as np
-
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.preprocessing import RobustScaler
-from sklearn.preprocessing import StandardScaler
-
-
-def get_all_file_path(input_dir, file_extension):
-    temp = glob.glob(os.path.join(input_dir, '**', '*.{}'.format(file_extension)), recursive=True)
-    return temp
-
-
-def get_filename(input_filepath):
-    return input_filepath.split('/')[-1]
-
-
-def get_pure_filename(input_filepath):
-    temp = input_filepath.split('/')[-1]
-    return temp.split('.')[0]
-
-
-def create_directory(dir_path):
-    try:
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
-    except OSError:
-        print('Error : Creating directory: '+dir_path)
-
-
-def set_scaler(name):
-    if name == 'MinMaxScaler':
-        return MinMaxScaler()
-    elif name == 'RobustScaler':
-        return RobustScaler()
-    elif name == 'StandardScaler':
-        return StandardScaler()
-
-
-def fit_selected_scaler(addition_dataset, scaler='None'):
-    tied_scaler = None
-    # if scaler != 'None' and scaler == 'MinMaxScaler':
-    #     temp = []
-    #     tied_scaler = set_scaler(scaler)
-    #     for pack in addition_dataset:
-    #         for line in pack:
-    #             temp.append(line)
-    #     temp = np.array(temp)
-    #     temp = np.delete(temp, 0, axis=1)
-    #     tied_scaler.fit(temp)
-    # save_scaler_name = './{}_saved.pkl'.format(scaler)
-    # joblib.dump(tied_scaler, save_scaler_name)
-    return tied_scaler
+import tool.file_io as file_io
 
 
 def get_train_test_valid():
@@ -83,7 +32,7 @@ def get_train_test_valid():
 
 
 def get_addition_dataset(input_dir, config):
-    file_list = get_all_file_path(input_dir=input_dir, file_extension='csv')
+    file_list = file_io.get_all_file_path(input_dir=input_dir, file_extension='csv')
     file_list.sort()
     print(file_list)
     target_dataset = []
@@ -128,7 +77,7 @@ def get_addition_dataset(input_dir, config):
 
     for idx, item in enumerate(addition_dataset):
         temp = pd.DataFrame(item)
-        create_directory(config['save_dir'])
+        file_io.create_directory(config['save_dir'])
         temp.to_csv('{}/dataset_{}.csv'.format(config['save_dir'], idx) , header=None, index=None)
 
 
