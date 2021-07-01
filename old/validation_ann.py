@@ -1,6 +1,6 @@
 import torch
 from data import data_loader
-import model
+from model import model
 from tool import metrics
 
 # parameters

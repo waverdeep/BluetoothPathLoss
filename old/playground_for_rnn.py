@@ -1,9 +1,8 @@
 import torch
 import torch.nn as nn
-import model
+from model import model
 from data import data_loader
 import numpy as np
-import pandas as pd
 import tensorflow as tf
 import tensorboard as tb
 from sklearn.metrics import mean_squared_error

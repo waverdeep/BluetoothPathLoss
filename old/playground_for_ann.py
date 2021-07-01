@@ -1,6 +1,5 @@
 import torch
-import torch.nn as nn
-import model
+from model import model
 from data import data_loader
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
