@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import tool.path_loss as path_loss
-import numpy as np
+import model.model_pathloss as path_loss
 import tool.file_io as file_io
 
 
@@ -12,12 +11,15 @@ def get_addition_dataset(config):
     target_dataset = []
     addition_dataset = []
 
+    # original file have -> ['meter', 'mac', 'type', 'rssi']
+    # version up file have -> ['meter', 'mac', 'type', 'rssi', 'channel']
     for file in file_list:
         temp = pd.read_csv(file)
         if config['device_id'] != '':
             temp = temp[temp['mac'] == config['device_id']]
         temp = temp.drop(['mac', 'type'], axis=1) # 불필요한 데이터 제거
         target_dataset.append(temp)
+    # dropped -> ['meter', 'rssi', 'channel']
 
     for item in target_dataset:
         temp = []
@@ -34,6 +36,8 @@ def get_addition_dataset(config):
                 del data[0]
             temp.append(data)
         addition_dataset.append(temp)
+    # finish ['meter', 'rssi', 'channel', 'tx_power', 'rx_height', 'tx_antenna_gain',
+    #         'rx_antenna_gain', 'covered', 'fspl']
 
     for idx, item in enumerate(addition_dataset):
         temp = pd.DataFrame(item)

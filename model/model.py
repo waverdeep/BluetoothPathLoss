@@ -5,7 +5,7 @@ import model_config
 
 
 class VanillaNetwork(nn.Module):
-    def __init__(self, input_size=7, activation='PReLU', linear=3):
+    def __init__(self, input_size=8, activation='PReLU', linear=3):
         super(VanillaNetwork, self).__init__()
         self.activation = activation
 
@@ -51,7 +51,7 @@ class VanillaNetwork(nn.Module):
 
 
 class VanillaRecurrentNetwork(nn.Module):
-    def __init__(self, input_size=7, recurrent_model='LSTM', activation='PReLU', bidirectional=False,
+    def __init__(self, input_size=8, recurrent_model='LSTM', activation='PReLU', bidirectional=False,
                  recurrent_hidden_size=64, recurrent_num_layers=1, linear=3, cuda=False):
         super(VanillaRecurrentNetwork, self).__init__()
         self.activation = activation
@@ -113,7 +113,7 @@ class VanillaRecurrentNetwork(nn.Module):
 
 
 class VanillaCRNNNetwork(nn.Module):
-    def __init__(self, input_size=7, recurrent_model='LSTM', activation='PReLU', bidirectional=False,
+    def __init__(self, input_size=8, recurrent_model='LSTM', activation='PReLU', bidirectional=False,
                  recurrent_num_layeres=1, recurrent_hidden_size=256):
         super(VanillaCRNNNetwork, self).__init__()
         # convolution
@@ -166,7 +166,7 @@ def model_load(model_configure):
 
 
 if __name__ == '__main__':
-    kind = 'CRNN'
+    kind = 'DNN'
     if kind == 'DNN':
         model = VanillaNetwork().cuda()
     elif kind == 'RNN':
@@ -180,14 +180,14 @@ if __name__ == '__main__':
     # model test
 
     if kind == 'DNN':
-        x_data = torch.empty(7,).cuda()
+        x_data = torch.empty(8,).cuda()
         pred = model(x_data)
         print("pred : ", pred.shape)
     elif kind == 'RNN':
-        x_data = torch.empty(1, 7, 7)
+        x_data = torch.empty(1, 8, 8)
         pred = model(x_data)
         print('pred : ', pred.shape)
     elif kind == 'CRNN':
-        x_data = torch.empty(1, 7, 15).cuda()
+        x_data = torch.empty(1, 8, 15).cuda()
         pred = model(x_data)
         print('pred : ', pred.shape)
