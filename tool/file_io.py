@@ -1,4 +1,5 @@
 import glob
+import natsort
 import os
 
 
@@ -22,3 +23,10 @@ def create_directory(dir_path):
             os.makedirs(dir_path)
     except OSError:
         print('Error : Creating directory: '+dir_path)
+
+
+def get_directory_list(dir_path, sort=True):
+    if sort:
+        return natsort.natsorted(os.listdir(dir_path))
+    else:
+        return os.listdir(dir_path)
