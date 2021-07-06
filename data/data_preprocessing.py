@@ -4,6 +4,10 @@ import model.model_pathloss as path_loss
 import tool.file_io as file_io
 
 
+def grapped_raw_data():
+    pass
+
+
 def get_addition_dataset(config):
     file_list = file_io.get_all_file_path(input_dir=config['input_dir'], file_extension='csv')
     file_list.sort()
