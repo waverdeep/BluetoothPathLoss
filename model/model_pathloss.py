@@ -70,13 +70,6 @@ def test(dataloader, model_type=''):
     metrics.plot_rssi_to_distance(total_rssi, total_label, total_pred)
 
 
-
-
-
-
-
-
-
 def main(model_config):
     _, test_dataloader, _ = data_loader.load_path_loss_with_detail_dataset(input_dir=model_config['input_dir'],
                                                                            model_type=model_config['model'],
@@ -87,7 +80,6 @@ def main(model_config):
                                                                            model_config['model'] == 'DNN' else
                                                                            model_config['sequence_length'])
     test(dataloader=test_dataloader, model_type='fspl')
-
 
 
 if __name__ == '__main__':
