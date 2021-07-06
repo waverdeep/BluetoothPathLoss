@@ -15,11 +15,11 @@ Type|Description|Unit
 MAC|Bluetooth MAC Addres|Address
 METER|Rx와 Tx가 떨어진 거리를 의미|meter
 RSSI|신호 세기 (Rx가 수신하는)|dBm
-TXPOWER|Tx의 송출 세기득|dBm
-TXHEIGHT|Tx의 높이|meter
-RXHEIGHT|Rx의 높이|meter
-TX_ANTENNA_GAIN|Tx안테나 이득|dBi
-RX_ANTENNA_GAIN|Rx안테나 게인|dBi
+TX_POWER|Tx의 송출 세기|dBm
+TX_HEIGHT|Tx의 높이|meter
+RX_HEIGHT|Rx의 높이|meter
+TX_ANTENNA_GAIN|Tx 안테나 이득|dBi
+RX_ANTENNA_GAIN|Rx 안테나 이득|dBi
 FSPL|Free Space Path Loss 계산 값|meter
 environment|환경 변수 (장애물, 날씨 등을 뜻함)|constant
 
@@ -29,18 +29,17 @@ Type|Description|Unit
 MAC|Bluetooth MAC Addres|Address
 METER|Rx와 Tx가 떨어진 거리를 의미|meter
 RSSI|신호 세기 (Rx가 수신하는)|dBm
-TXPOWER|Tx의 송출 세기득|dBm
-TXHEIGHT|Tx의 높이|meter
-RXHEIGHT|Rx의 높이|meter
+TX_POWER|Tx의 송출 세기득|dBm
+TX_HEIGHT|Tx의 높이|meter
+RX_HEIGHT|Rx의 높이|meter
 TX_ANTENNA_GAIN|Tx안테나 이득|dBi
-RX_ANTENNA_GAIN|Rx안테나 게인|dBi
+RX_ANTENNA_GAIN|Rx안테나 이득|dBi
 FSPL|Free Space Path Loss 계산 값|meter
 Covered|안테나를 둘러싸고 있는 장애물|constant
-Adertising Channel|데이터를 수집한 채널 정보|constant: 37,38,39
+Adertising_Channel|데이터를 수집한 채널 정보|constant: 37,38,39
 
 ## 사용한 모델
 - DNN : Dense Layer 4계층으로 이루어진 모델
 - LSTM : Recurrent 한 모델을 적용해보기위해 LSTM 사용 (many to one의 형태로 구현)
 - CRNN : Convolution Layer와 LSTM 계층이 합쳐진 구조 사용
-## V1 실험 모델
-- dataset : non-scaled dataset
+
