@@ -39,7 +39,7 @@ Covered|안테나를 둘러싸고 있는 장애물|constant
 Adertising Channel|데이터를 수집한 채널 정보|constant: 37,38,39
 
 ## 사용한 모델
-- DNN : Fully Connected Layer 4계층으로 이루어진 모델 (Dropout layer 존재, Activiation Function은 PReLU 사용)
+- DNN : Dense Layer 4계층으로 이루어진 모델
 - LSTM : Recurrent 한 모델을 적용해보기위해 LSTM 사용 (many to one의 형태로 구현)
 - CRNN : Convolution Layer와 LSTM 계층이 합쳐진 구조 사용
 ## V1 실험 모델
