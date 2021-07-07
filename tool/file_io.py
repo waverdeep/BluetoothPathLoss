@@ -30,3 +30,9 @@ def get_directory_list(dir_path, sort=True):
         return natsort.natsorted(os.listdir(dir_path))
     else:
         return os.listdir(dir_path)
+
+
+def read_txt_file(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    return lines
