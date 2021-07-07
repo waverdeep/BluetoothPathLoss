@@ -38,3 +38,13 @@ def read_txt_file(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
     return lines
+
+
+def extract_only_directory(dir_list):
+    new_dir_list = []
+    for name in dir_list:
+        if '.csv' in name:
+            pass
+        else:
+            new_dir_list.append(name)
+    return new_dir_list
