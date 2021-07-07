@@ -1,4 +1,5 @@
 import tool.file_io as file_io
+import pandas as pd
 
 
 def get_point(dir_name):
@@ -19,42 +20,86 @@ def split_raw_data_line(line, check_label='ADV_IND'):
         truncated = line.split(' ')
         truncated = ''.join(truncated)
         truncated = truncated.split('||')
+        truncated[3] = truncated[3].replace("\n", "")
         return truncated
     return ''
 
 
-
 # type : point_base, line_base
 def unpack_raw_data(root_path, points=None, name=None, info=None, collection_type='line_base'):
+    # "mac", "ADV", "RSSI", "NAME", "CAHNNEL", "TYPE", "TX_POWER", "A_GAIN", "A_TYPE", "BOARD"
+    space = []
+    # 전체 폴더 00, 05, 10, ....
     dir_list = file_io.get_directory_list(input_dir_path)
-    for directory in dir_list:
+    dir_list = file_io.extract_only_directory(dir_list)
+    # 전체 폴더 중 하나 접근 00
+    for dir_idx, directory in enumerate(dir_list):
+        line_base_pack = []
         if collection_type == 'point_base':
             x, y = get_point(directory)
         elif collection_type == 'line_base':
             x = get_line(directory)
-
-        dir = "{}{}/".format(root_path, directory)
-        file_list = file_io.get_all_file_path(dir, file_extension='txt')
+        # 하나의 라인에 대한 폴더 접근
+        dir_path = "{}/{}/".format(root_path, directory)
+        # 파일 리스트 추출
+        file_list = file_io.get_all_file_path(dir_path, file_extension='txt')
+        # 하나의 파일 열어서 가공
         for file_idx, file in enumerate(file_list):
+            channel_info = file_io.get_pure_filename(file).split('_')[1]
             lines = file_io.read_txt_file(file)
+            for line in lines:
+                # 0: mac
+                # 1: ADV
+                # 2: RSSI
+                # 3: Name
+                split_data = split_raw_data_line(line)
+                if split_data != '':
+                    for device_pack_idx, device_pack in enumerate(name):
+                        for device_idx, device_name in enumerate(device_pack):
+                            if device_name in line:
+                                device_info = info[device_pack_idx][device_idx]
+                                split_data.append(channel_info)
+                                split_data.append(device_info[0])
+                                split_data.append(device_info[1])
+                                split_data.append(device_info[2])
+                                split_data.append(device_info[3])
+                                split_data.append(device_info[4])
+                                split_data.append(device_info[5])
+                                device_point_x = points[device_pack_idx][dir_idx][0]
+                                device_point_y = points[device_pack_idx][dir_idx][1]
+                                split_data.append(device_point_x)
+                                split_data.append(device_point_y)
+                                space.append(split_data)
+                                line_base_pack.append(split_data)
+                    # print(split_data)
+        pack_pd = pd.DataFrame(line_base_pack, columns=["mac", "ADV", "RSSI", "NAME", "CHANNEL", "TYPE", "TX_POWER",
+                                                        "COVERED", "ANTENNA_GAIN", "ANTENNA_TYPE", "BOARD", "X", "Y"])
+        save_path = "{}/{}.csv".format(root_path, directory)
+        pack_pd.to_csv(save_path, mode='w')
+    pack_all_pd = pd.DataFrame(line_base_pack, columns=["mac", "ADV", "RSSI", "NAME", "CHANNEL", "TYPE", "TX_POWER",
+                                                        "COVERED", "ANTENNA_GAIN", "ANTENNA_TYPE", "BOARD", "X", "Y"])
+    save_path = "{}.csv".format(root_path)
+    pack_all_pd.to_csv(save_path, mode='w')
 
 
 
 
 
 if __name__ == '__main__':
-    device01_info = ['nrf_custom', 'nrf_dongle', 'cc26x']
-    device02_info = ['nrf_custom', 'nrf_dongle', 'cc26x']
-    device03_info = ['nrf_custom', 'nrf_dongle', 'cc26x']
-    device04_info = ['proto_v2_FL', 'proto_v2_CH', 'core_CH']
-    device05_info = ['pcb_FL']
+    # antenna type : 0=chip, 1=flexible, 2=pcb
+    # board type : 0=ticc26x, 1=nrfdongle, 2=nrfcustom, 3=tiproto
+    # device_name, txpower, covered, antenna_gain, antenna_type, board
+    device01_info = [['nrf_custom', 8, 0, -1.47, 0, 2], ['nrf_dongle', 8, 0, -1, 2, 1], ['cc26x', 5, 0, -1.47, 2, 0]]
+    device02_info = [['nrf_custom', 8, 0, -1.47, 0, 2], ['nrf_dongle', 8, 0, -1, 2, 1], ['cc26x', 5, 0, -1.47, 2, 0]]
+    device03_info = [['nrf_custom', 8, 0, -1.47, 0, 2], ['nrf_dongle', 8, 0, -1, 2, 1], ['cc26x', 5, 0, -1.47, 2, 0]]
+    device04_info = [['proto_v2_FL', 5, 2, 3.6, 1, 3], ['proto_v2_CH', 5, 2, -1.47, 0, 3], ['core_CH', 5, 1, -1.47, 0, 3]]
+    device05_info = [['pcb_FL', 5, 0, 3.6, 1, 3]]
     device_info = [device01_info, device02_info, device03_info, device04_info, device05_info]
     # device pack
     device01 = ['f9:9c:e9:5d:b9:6f', 'f9:cd:8d:26:b2:96', 'f8:8a:5e:2d:82:85']  # nrf custom, nrf dongle, cc26x
-    device02 = ['d3:0c:28:ba:de:34', 'c6:46:7a:76:ed:6c', 'd3:0c:28:ba:de:34']  # nrf custom, nrf dongle, cc26x
+    device02 = ['d3:0c:28:ba:de:34', 'c6:46:7a:76:ed:6c', 'f8:8a:5e:2d:80:f4']  # nrf custom, nrf dongle, cc26x
     device03 = ['fb:f8:c9:9d:d8:d6', 'ea:33:8f:29:05:0f', 'f8:8a:5e:2d:a4:8a']  # nrf custom, nrf dongle, cc26x
-    device04 = ['04:ee:03:74:ae:a5', '04:ee:03:74:b0:30',
-                '04:ee:03:74:b0:3f']  # Flexible, trackingball proto *2, core *1
+    device04 = ['04:ee:03:74:ae:a5', '04:ee:03:74:b0:30', '04:ee:03:74:b0:3f']  # Flexible, trackingball proto *2, core *1
     device05 = ['04:ee:03:74:ae:dd']  # trackingball pcb
     device = [device01, device02, device03, device04, device05]
 
@@ -72,7 +117,7 @@ if __name__ == '__main__':
     device05_point_b = [[0, 25], [5, 20], [10, 25], [15, 5], [20, 25], [25, 25]]
     device_point_b = [device01_point_b, device02_point_b, device03_point_b, device04_point_b, device05_point_b]
 
-    input_dir_path = '../dataset/v5/pol01/line/'
-    unpack_raw_data(input_dir_path)
+    input_dir_path = '../dataset/v5/pol01/line'
+    unpack_raw_data(input_dir_path, points=device_point, name=device, info=device_info)
 
 
