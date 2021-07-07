@@ -3,8 +3,10 @@ import natsort
 import os
 
 
-def get_all_file_path(input_dir, file_extension):
+def get_all_file_path(input_dir, file_extension, sort=True):
     temp = glob.glob(os.path.join(input_dir, '**', '*.{}'.format(file_extension)), recursive=True)
+    if sort:
+        temp = natsort.natsorted(temp)
     return temp
 
 
