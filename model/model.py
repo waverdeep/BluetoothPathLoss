@@ -52,7 +52,7 @@ class VanillaNetwork(nn.Module):
 
 class VanillaRecurrentNetwork(nn.Module):
     def __init__(self, input_size=11, recurrent_model='LSTM', activation='PReLU', bidirectional=False,
-                 recurrent_hidden_size=64, recurrent_num_layers=1, linear=3, cuda=False):
+                 recurrent_hidden_size=64, recurrent_num_layers=1, linear=3, cuda=True):
         super(VanillaRecurrentNetwork, self).__init__()
         self.activation = activation
         self.hidden_size = recurrent_hidden_size
@@ -147,10 +147,13 @@ class VanillaCRNNNetwork(nn.Module):
 def model_load(model_configure):
     nn_model = None
     if model_configure['model'] == 'DNN':
-        nn_model = VanillaNetwork(model_configure['input_size'], activation=model_configure['activation'])
+        nn_model = VanillaNetwork(model_configure['input_size'], activation=model_configure['activation'],
+                                  linear=model_configure['linear'])
     elif model_configure['model'] == 'RNN':
-        nn_model = VanillaRecurrentNetwork(model_configure['input_size'],
-                                           activation=model_configure['activation'])
+        nn_model = VanillaRecurrentNetwork(input_size=model_configure['input_size'],
+                                           activation=model_configure['activation'],
+                                           linear=model_configure['linear'],
+                                           cuda=model_configure['cuda'])
     elif model_configure['model'] == 'CRNN':
         nn_model = VanillaCRNNNetwork(input_size=model_configure['input_size'],
                                       activation=model_configure['activation'])

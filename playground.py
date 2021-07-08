@@ -117,7 +117,7 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
                                                                                                          model_type=model_config['model'],
                                                                                                          num_workers=model_config['num_workers'],
                                                                                                          batch_size=model_config['batch_size'],
-                                                                                                         shuffle=model_config['shuffle'],
+                                                                                                         shuffle=True,
                                                                                                          input_size=size)
     nn_model = model.model_load(model_configure=model_config)
     if checkpoint is not None:
@@ -168,9 +168,9 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
 
 
 if __name__ == '__main__':
-    file_path = 'configurations/v5_v1/'
-    checkpoint_dir = 'checkpoints/v5_v1'
-    writer_path = 'runs_v5_v1'
+    file_path = 'configurations/v5_v2/'
+    checkpoint_dir = 'checkpoints/v5_v2'
+    writer_path = 'runs_v5_v2'
     checkpoint = None # 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
     file_list = tool.file_io.get_all_file_path(file_path, file_extension='json')
     for file in file_list:
@@ -183,6 +183,8 @@ if __name__ == '__main__':
             message = "{}_{}_{}_{}_sl{}".format(data['model'], data['optimizer'],
                                                         data['activation'], data['learning_rate'],
                                                         data['sequence_length'])
+            if 'linear' in data:
+                message += "_{}".format(data['linear'])
             train(model_config=data, count=idx, writer_path=writer_path, message=message, checkpoint_dir=checkpoint_dir, checkpoint=checkpoint)
 
 
