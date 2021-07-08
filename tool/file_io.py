@@ -37,7 +37,7 @@ def get_directory_list(dir_path, sort=True):
 def read_txt_file(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
-    return lines
+        return lines
 
 
 def extract_only_directory(dir_list):
