@@ -4,6 +4,39 @@ from torch.autograd import Variable
 import model_config
 
 
+def n_gram(data_list, n=1):
+    result = []
+    for i in range(len(data_list) - n):
+        result.append(data_list[i:i+n])
+    return result
+
+
+# param type : [11, 32, 64, 32, 1]
+def build_linear_layer(layer, param, activation, dropout_rate):
+    param_grapped = n_gram(param)
+    for idx, line in param_grapped:
+        layer.add_module(nn.Linear(line[0], line[1]))
+        if line[1] != 1:
+            layer.add_module(model_config.set_activation(activation))
+            layer.add_module(nn.Dropout(dropout_rate))
+    return layer
+
+
+class Cuustom_DNN(nn.Module):
+    def __init__(self, param=None, activation='ReLU', dropout_rate=0.5):
+        super(Cuustom_DNN, self).__init__()
+        self.linear_layer = nn.Sequuential()
+        self.linear_layer = build_linear_layer(layer=self.linear_layer, param=param, activation=activation,
+                                               dropout_rate=dropout_rate)
+
+    def forward(self, x):
+        return self.linear_layer(x)
+
+
+class CustomRNN(nn.Module):
+    pass
+
+
 class VanillaNetwork(nn.Module):
     def __init__(self, input_size=11, activation='PReLU', linear=3):
         super(VanillaNetwork, self).__init__()
