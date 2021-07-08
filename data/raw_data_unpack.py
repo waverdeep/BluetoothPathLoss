@@ -1,6 +1,6 @@
 import tool.file_io as file_io
 import pandas as pd
-
+from model import model_pathloss
 
 def get_point(dir_name):
     # ex) meter_1_1/
@@ -56,7 +56,7 @@ def unpack_raw_data(root_path, points=None, name=None, info=None, collection_typ
                 if split_data != '':
                     for device_pack_idx, device_pack in enumerate(name):
                         for device_idx, device_name in enumerate(device_pack):
-                            if device_name in line:
+                            if device_name in split_data[0]:
                                 device_info = info[device_pack_idx][device_idx]
                                 split_data.append(channel_info)
                                 split_data.append(device_info[0])
@@ -71,23 +71,65 @@ def unpack_raw_data(root_path, points=None, name=None, info=None, collection_typ
                                 split_data.append(device_point_y)
                                 space.append(split_data)
                                 line_base_pack.append(split_data)
+
                     # print(split_data)
         pack_pd = pd.DataFrame(line_base_pack, columns=["mac", "ADV", "RSSI", "NAME", "CHANNEL", "TYPE", "TX_POWER",
                                                         "COVERED", "ANTENNA_GAIN", "ANTENNA_TYPE", "BOARD", "X", "Y"])
         save_path = "{}/{}.csv".format(root_path, directory)
-        pack_pd.to_csv(save_path, mode='w')
-    pack_all_pd = pd.DataFrame(line_base_pack, columns=["mac", "ADV", "RSSI", "NAME", "CHANNEL", "TYPE", "TX_POWER",
+        pack_pd.to_csv(save_path, mode='w', index=None)
+    pack_all_pd = pd.DataFrame(space, columns=["mac", "ADV", "RSSI", "NAME", "CHANNEL", "TYPE", "TX_POWER",
                                                         "COVERED", "ANTENNA_GAIN", "ANTENNA_TYPE", "BOARD", "X", "Y"])
     save_path = "{}.csv".format(root_path)
-    pack_all_pd.to_csv(save_path, mode='w')
+    pack_all_pd.to_csv(save_path, mode='w', index=None)
 
 
+def make_training_data(data_path, save_path, main_point):
+    new_all_pack = []
+    dataset = pd.read_csv(data_path)
+    device_list = list(set(list(dataset['mac'])))
+    dataset_pack = []
+    for device_mac in device_list:
+        temp = pd.DataFrame(dataset[dataset['mac'] == device_mac].to_dict())
+        c37 = pd.DataFrame(temp[temp['CHANNEL'] == 37].to_dict())
+        c38 = pd.DataFrame(temp[temp['CHANNEL'] == 38].to_dict())
+        c39 = pd.DataFrame(temp[temp['CHANNEL'] == 39].to_dict())
+        dataset_pack.append(c37)
+        dataset_pack.append(c38)
+        dataset_pack.append(c39)
+    for data_idx, data in enumerate(dataset_pack):
+        lines = []
+        for line_idx, data_line in data.iterrows():
+            x = int(data_line['X'])
+            y = int(data_line['Y'])
+            mac = data_line['mac']
+            rssi = int(data_line['RSSI'])
+            channel = int(data_line['CHANNEL'])
+            tx_power = int(data_line['TX_POWER'])
+            covered = int(data_line['COVERED'])
+            tx_antenna_gain = int(data_line['ANTENNA_GAIN'])
+            rx_height = 1.7
+            rx_antenna_gain = 16.0
+            tx_height = 0.01
+            tx_antenna_type = int(data_line['ANTENNA_TYPE'])
+            tx_board_type = int(data_line['BOARD'])
+            distance = model_pathloss.get_distance(main_point[0], main_point[1], x, y)
+            fspl = model_pathloss.fspl_model(rssi)
+            new_line = [distance, rssi, fspl, channel, covered, tx_power, tx_antenna_gain, rx_antenna_gain, tx_height,
+                        rx_height, tx_antenna_type, tx_board_type, x, y]
+            lines.append(new_line)
+            new_all_pack.append(new_line)
+        if len(lines) > 15:
+            df = pd.DataFrame(lines)
+            name = mac.replace(":", '-')
+            path = "{}/{}_{}-{}_{}.csv".format(save_path, name, main_point[0], main_point[1], channel)
+            df.to_csv(path, header=None, index=None)
+    print(len(new_all_pack))
 
 
 
 if __name__ == '__main__':
     # antenna type : 0=chip, 1=flexible, 2=pcb
-    # board type : 0=ticc26x, 1=nrfdongle, 2=nrfcustom, 3=tiproto
+    # board type :
     # device_name, txpower, covered, antenna_gain, antenna_type, board
     device01_info = [['nrf_custom', 8, 0, -1.47, 0, 2], ['nrf_dongle', 8, 0, -1, 2, 1], ['cc26x', 5, 0, -1.47, 2, 0]]
     device02_info = [['nrf_custom', 8, 0, -1.47, 0, 2], ['nrf_dongle', 8, 0, -1, 2, 1], ['cc26x', 5, 0, -1.47, 2, 0]]
@@ -106,7 +148,7 @@ if __name__ == '__main__':
     device01_point = [[0, 5], [5, 25], [10, 10], [15, 10], [20, 20], [25, 15]]
     device02_point = [[0, 10], [5, 5], [10, 20], [15, 15], [20, 5], [25, 10]]
     device03_point = [[0, 15], [5, 10], [10, 25], [15, 5], [20, 25], [25, 5]]
-    device04_point = [[0, 20], [5, 14], [10, 5], [15, 24], [20, 15], [25, 25]]
+    device04_point = [[0, 20], [5, 14], [10, 5], [15, 25], [20, 15], [25, 25]]
     device05_point = [[0, 25], [5, 20], [10, 15], [15, 20], [20, 20], [25, 15]]
     device_point = [device01_point, device02_point, device03_point, device04_point, device05_point]
 
@@ -118,6 +160,9 @@ if __name__ == '__main__':
     device_point_b = [device01_point_b, device02_point_b, device03_point_b, device04_point_b, device05_point_b]
 
     input_dir_path = '../dataset/v5/pol01/line'
-    unpack_raw_data(input_dir_path, points=device_point, name=device, info=device_info)
+    # unpack_raw_data(input_dir_path, points=device_point_b, name=device, info=device_info)
+    #
+    dataset_path = "{}.csv".format(input_dir_path)
+    make_training_data(dataset_path, save_path='../dataset/v5/points', main_point=[0, 0])
 
 
