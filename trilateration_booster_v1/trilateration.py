@@ -87,26 +87,28 @@ def increase_distance(distance):
 
 
 model_configure = {"model": "CRNN", "criterion": "MSELoss","optimizer": "Adam","activation": "LeakyReLU",
-                   "learning_rate": 0.001, "cuda": True, "batch_size": 512, "epoch": 800, "input_size": 8,
+                   "learning_rate": 0.001, "cuda": True, "batch_size": 512, "epoch": 800, "input_size": 11,
                    "sequence_length": 15, "input_dir": "dataset/v1_scaled_mm", "shuffle": True, "num_workers": 8,
-                   'checkpoint_path': '../checkpoints_all_v4/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_879.pt',
+                   'checkpoint_path': '../checkpoints/v5_v1/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_569.pt',
                    'test_data_path': 'dataset/v3_test_convert', 'scaler_path': 'data/MinMaxScaler_saved.pkl'}
 # ../checkpoints_all_v3/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_769.pt
 # ../checkpoints_all_v3_re/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_829.pt
+# ../checkpoints_all_v4/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_879.pt
+# ../checkpoints/v5_v1/CRNN_Adam_LeakyReLU_0.001_sl15_000_epoch_569.pt
 
 if __name__ == '__main__':
     start_time = time.time()
     circles = []
-    circles.append(Circle(Point(0, 0), positioning.inference(model_configure,
-                                                                  '../dataset/v4/v4_test/dk_convert_5_5/dataset_0.csv')))
-    circles.append(Circle(Point(30, 0), positioning.inference(model_configure,
-                                                                   '../dataset/v4/v4_test/dk_convert_5_5/dataset_1.csv')))
-    circles.append(Circle(Point(0, 30), positioning.inference(model_configure,
-                                                                   '../dataset/v4/v4_test/dk_convert_5_5/dataset_2.csv')))
+    # circles.append(Circle(Point(0, 0), positioning.inference(model_configure,
+    #                                                               '../dataset/v5/test_point_00_15/fb-f8-c9-9d-d8-d6_37_0_15_pol1.csv')['median']))
+    # circles.append(Circle(Point(30, 0), positioning.inference(model_configure,
+    #                                                                '../dataset/v5/test_point_00_15/fb-f8-c9-9d-d8-d6_37_0_15_pol2.csv')['median']))
+    # circles.append(Circle(Point(0, 30), positioning.inference(model_configure,
+    #                                                                '../dataset/v5/test_point_00_15/fb-f8-c9-9d-d8-d6_37_0_15_pol3.csv')['median']))
 
-    # circles.append(Circle(Point(0, 0), 30.413813))
-    # circles.append(Circle(Point(30, 0), 39.051248))
-    # circles.append(Circle(Point(0, 30), 5.0))
+    circles.append(Circle(Point(0, 0), 15))
+    circles.append(Circle(Point(30, 0), 15))
+    circles.append(Circle(Point(0, 30), 30.577108))
 
     flag = True
     while flag:

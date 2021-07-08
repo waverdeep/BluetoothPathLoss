@@ -1,5 +1,5 @@
 import torch
-import model
+from model import model
 from data import data_loader
 import numpy as np
 import tool.optimizer as optimizer
@@ -9,6 +9,7 @@ from tool import metrics
 import pandas as pd
 from tool import use_tensorboard
 import random
+import tool
 # randomness
 random_seed = 42
 np.random.seed(random_seed)
@@ -167,11 +168,11 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
 
 
 if __name__ == '__main__':
-    file_path = 'old/configurations_old/configurations_v3'
-    checkpoint_dir = 'old/configurations_old/type_data_size/checkpoints_size_50'
-    writer_path = 'runs_size_50'
+    file_path = 'configurations/v5_v1/'
+    checkpoint_dir = 'checkpoints/v5_v1'
+    writer_path = 'runs_v5_v1'
     checkpoint = None # 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
-    file_list = data_preprocessing.get_all_file_path(file_path, file_extension='json')
+    file_list = tool.file_io.get_all_file_path(file_path, file_extension='json')
     for file in file_list:
         print(file)
         with open(file) as f:

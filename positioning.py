@@ -1,5 +1,5 @@
 import torch
-import model
+from model import model
 import numpy as np
 from data import data_loader
 import random
@@ -19,7 +19,7 @@ torch.cuda.manual_seed_all(random_seed) # if use multi-GPU
 
 
 def inference(model_config, file):
-    nn_model = model.model.model_load(model_config)
+    nn_model = model.model_load(model_config)
     inference_dataloader = \
         data_loader.load_path_loss_with_detail_inference_dataset(file, 'CRNN',
                                                                  batch_size=model_config['batch_size'])
@@ -36,12 +36,12 @@ def inference(model_config, file):
             y_pred = nn_model(x_data).reshape(-1).cpu().numpy()
             total_pred[len(total_pred):len(y_pred)] = y_pred
 
-    print('mean : ', total_pred.mean())
-    print('median : ', np.median(total_pred))
-    print('max : ', total_pred.max())
-    print('min : ', total_pred.min())
-    return {'mean': total_pred.mean(), 'median': np.median(total_pred),
-            'max': total_pred.max(), 'min': total_pred.min()}
+            print('mean : ', y_pred.mean())
+            print('median : ', np.median(y_pred))
+            print('max : ', y_pred.max())
+            print('min : ', y_pred.min())
+            return {'mean': y_pred.mean(), 'median': np.median(y_pred),
+                    'max': y_pred.max(), 'min': y_pred.min()}
 
 
 model_configure = {"model": "CRNN",
