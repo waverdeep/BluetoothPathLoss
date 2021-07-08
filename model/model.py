@@ -5,7 +5,7 @@ import model_config
 
 
 class VanillaNetwork(nn.Module):
-    def __init__(self, input_size=8, activation='PReLU', linear=3):
+    def __init__(self, input_size=11, activation='PReLU', linear=3):
         super(VanillaNetwork, self).__init__()
         self.activation = activation
 
@@ -51,7 +51,7 @@ class VanillaNetwork(nn.Module):
 
 
 class VanillaRecurrentNetwork(nn.Module):
-    def __init__(self, input_size=8, recurrent_model='LSTM', activation='PReLU', bidirectional=False,
+    def __init__(self, input_size=11, recurrent_model='LSTM', activation='PReLU', bidirectional=False,
                  recurrent_hidden_size=64, recurrent_num_layers=1, linear=3, cuda=False):
         super(VanillaRecurrentNetwork, self).__init__()
         self.activation = activation
@@ -113,11 +113,11 @@ class VanillaRecurrentNetwork(nn.Module):
 
 
 class VanillaCRNNNetwork(nn.Module):
-    def __init__(self, input_size=8, recurrent_model='LSTM', activation='PReLU', bidirectional=False,
+    def __init__(self, input_size=11, recurrent_model='LSTM', activation='PReLU', bidirectional=False,
                  recurrent_num_layeres=1, recurrent_hidden_size=256):
         super(VanillaCRNNNetwork, self).__init__()
         # convolution
-        self.num_layers = recurrent_hidden_size
+        self.num_layers = recurrent_num_layeres
         self.hidden_size = recurrent_hidden_size
         self.activation = activation
         self.conv1d_layer = nn.Conv1d(input_size, input_size, 3)
@@ -166,7 +166,7 @@ def model_load(model_configure):
 
 
 if __name__ == '__main__':
-    kind = 'DNN'
+    kind = 'CRNN'
     if kind == 'DNN':
         model = VanillaNetwork().cuda()
     elif kind == 'RNN':
@@ -188,6 +188,6 @@ if __name__ == '__main__':
         pred = model(x_data)
         print('pred : ', pred.shape)
     elif kind == 'CRNN':
-        x_data = torch.empty(1, 8, 15).cuda()
+        x_data = torch.empty(1, 11, 15).cuda()
         pred = model(x_data)
         print('pred : ', pred.shape)
