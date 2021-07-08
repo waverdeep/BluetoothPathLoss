@@ -7,7 +7,7 @@ import time
 import math
 import trilateration_booster_v1.trilateration as trilateration
 # randomness
-random_seed = 42
+random_seed = 11
 np.random.seed(random_seed)
 random.seed(random_seed)
 torch.manual_seed(random_seed)
