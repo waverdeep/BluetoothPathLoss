@@ -28,6 +28,10 @@ def get_distance_with_rssi(rssi, tx_power, free_space=2):
     return math.pow(10, (tx_power - rssi) / (10 * free_space))
 
 
+def get_distance(hpx, hpy, mx,my):
+    return math.sqrt(pow(hpx-mx,2)+pow(hpy-my,2))
+
+
 def log_distance(rssi):
     freq = 2412 * math.pow(10, 6)  # Transmission frequency
     txPower = 5  # Transmission power in dB
