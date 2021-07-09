@@ -1,0 +1,17 @@
+[
+  {
+    "model_type": "Custom_DNN",
+    "input_size": [11, 32, 64, 128, 64, 32, 1],
+    "activation": "ReLU",
+    "dropout_rate" : 0.5,
+    "criterion": "MSELoss",
+    "optimizer": "AdaDelta",
+    "learning_rate": 0.1,
+    "use_cuda": true,
+    "batch_size": 512,
+    "epoch": 1000,
+    "num_workers": 8,
+    "shuffle": true,
+    "input_dir": "dataset/v5/new"
+  }
+]
