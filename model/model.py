@@ -12,9 +12,9 @@ def n_gram(data_list, n=1):
 
 
 # param type : [11, 32, 64, 32, 1]
-def build_linear_layer(layer, param, activation, dropout_rate):
-    param_grapped = n_gram(param)
-    for idx, line in param_grapped:
+def build_linear_layer(layer, linear_layers, activation, dropout_rate):
+    grapped_linear = n_gram(linear_layers)
+    for idx, line in grapped_linear:
         layer.add_module(nn.Linear(line[0], line[1]))
         if line[1] != 1:
             layer.add_module(model_config.set_activation(activation))
@@ -23,18 +23,46 @@ def build_linear_layer(layer, param, activation, dropout_rate):
 
 
 class Cuustom_DNN(nn.Module):
-    def __init__(self, param=None, activation='ReLU', dropout_rate=0.5):
+    def __init__(self, linear_layers=None, activation='ReLU', dropout_rate=0.5):
         super(Cuustom_DNN, self).__init__()
-        self.linear_layer = nn.Sequuential()
-        self.linear_layer = build_linear_layer(layer=self.linear_layer, param=param, activation=activation,
-                                               dropout_rate=dropout_rate)
+        self.layer_stack = nn.Sequuential()
+        self.layer_stack = build_linear_layer(layer=self.layer_stack, linear_layers=linear_layers, activation=activation,
+                                              dropout_rate=dropout_rate)
 
     def forward(self, x):
-        return self.linear_layer(x)
+        return self.layer_stack(x)
 
 
 class CustomRNN(nn.Module):
-    pass
+    def __init__(self, input_size=11, model='LSTM', activation='ReLU', bidirectional=False,
+                 hidden_size=64, num_layers=1, linear_layers=None, dropout_rate=0.5, cuda=True):
+        super(CustomRNN, self).__init__()
+        self.cuda = cuda
+        self.linear_layers = linear_layers.insert(0, hidden_size)
+        self.rnn_layer01 = model_config.set_recurrent_layer(name=model, input_size=input_size, activation=activation,
+                                                            bidirectional=bidirectional,
+                                                            hidden_size=hidden_size, num_layers=num_layers)
+        self.linear_stack = nn.Sequential()
+        self.linear_stack = build_linear_layer(layer=self.linear_stack, linear_layers=self.linear_layersm,
+                                               activation=activation,
+                                               dropout_rate=dropout_rate)
+
+    def forward(self, x):
+        if self.cuda:
+            h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size)).cuda()
+            c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size)).cuda()
+        else:
+            h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))
+            c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))
+        output, (h_out, _) = self.rnn_layer01(x, (h_0, c_0))
+        return self.linear_stack(output[:, -1, :])
+
+
+class CustomCRNN(nn.Module):
+    def __init__(self, input_size=11, model='LSTM', activation='ReLU', bidirectional=False,
+                 hidden_size=64, num_layers=1, linear_layers=None, dropout_rate=0.5, cuda=True):
+        super(CustomCRNN, self).__init__()
+        self.conv1d_layer = nn.Conv1d(input_size, input_size, 3)
 
 
 class VanillaNetwork(nn.Module):
