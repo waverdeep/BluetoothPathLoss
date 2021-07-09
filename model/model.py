@@ -47,6 +47,8 @@ class CustomRNN(nn.Module):
                  hidden_size=64, num_layers=1, linear_layers=None, dropout_rate=0.5, cuda=True):
         super(CustomRNN, self).__init__()
         self.cuda = cuda
+        self.num_layers = num_layers
+        self.hidden_size = hidden_size
         self.linear_layers = linear_layers.insert(0, hidden_size)
         self.rnn_layer01 = model_config.set_recurrent_layer(name=model, input_size=input_size, activation=activation,
                                                             bidirectional=bidirectional,
@@ -57,13 +59,8 @@ class CustomRNN(nn.Module):
                                                dropout_rate=dropout_rate)
 
     def forward(self, x):
-        if self.cuda:
-            h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size)).cuda()
-            c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size)).cuda()
-        else:
-            h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))
-            c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))
-        output, (h_out, _) = self.rnn_layer01(x, (h_0, c_0))
+        output, (h_out, _) = self.rnn_layer01(x, set_state_h_c(num_layer=self.num_layers, size=x.size(0),
+                                                               hidden_size=self.hidden_size))
         return self.linear_stack(output[:, -1, :])
 
 
@@ -72,12 +69,14 @@ class CustomCRNN(nn.Module):
                  hidden_size=64, num_layers=1, linear_layers=None, dropout_rate=0.5, cuda=True):
         super(CustomCRNN, self).__init__()
         # convolution layer를 더 쌓는게 맞을지 고민해봐야 할것 같음
-        # nn.Conv1d(input_channel, output_channel, kernel_size)
+        # nn.Conv1d(input_channel, output_channel, kernel_size)\
+        self.num_layers = num_layers
+        self.hidden_size = hidden_size
         self.conv1d_layer01 = nn.Conv1d(input_size, input_size, 3)
         self.conv1d_layer02 = nn.Conv2d(input_size, input_size, 3)
         self.rnn_layer01 = model_config.set_recurrent_layer(name=model, input_size=input_size,
-                                                          hidden_size=hidden_size, num_layers=num_layers,
-                                                          batch_first=True, bidirectional=bidirectional,)
+                                                            hidden_size=hidden_size, num_layers=num_layers,
+                                                            batch_first=True, bidirectional=bidirectional,)
         self.linear_stack = nn.Sequential()
         self.linear_stack = build_linear_layer(layer=self.linear_stack, linear_layers=self.linear_layersm,
                                                activation=activation,
@@ -85,11 +84,11 @@ class CustomCRNN(nn.Module):
 
     def forward(self, x):
         out = self.conv1d_layer01(x)
-        out = self.conv1d_layer02(x)
+        out = self.conv1d_layer02(out)
         out = out.transpose(1, 2)
-        h_0
-
-
+        out = self.rnn_layer01(out, set_state_h_c(num_layer=self.num_layers, size=x.size(0),
+                                                  hidden_size=self.hidden_size))
+        return self.linear_stack(out)
 
 
 class VanillaNetwork(nn.Module):
