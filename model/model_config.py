@@ -26,12 +26,18 @@ def n_gram(data_list, n=2):
 # param type : [11, 32, 64, 32, 1]
 def build_linear_layer(layer, linear_layers, activation, dropout_rate):
     grapped_linear = n_gram(linear_layers)
-    print(grapped_linear)
     for idx, line in enumerate(grapped_linear):
         layer.add_module("linear_{}".format(idx), nn.Linear(line[0], line[1]))
         if line[1] != 1:
             layer.add_module("activation_{}".format(idx), set_activation(activation))
             layer.add_module("dropout_{}".format(idx), nn.Dropout(dropout_rate))
+    return layer
+
+
+def build_conv1d_layer(layer, convolution_layers, input_size):
+    for i in range(convolution_layers):
+        layer.add_module("conv1d_{}".format(i), nn.Conv1d(input_size, input_size, 3))
+
     return layer
 
 
