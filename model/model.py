@@ -4,39 +4,13 @@ from torch.autograd import Variable
 import model_config
 
 
-def n_gram(data_list, n=1):
-    result = []
-    for i in range(len(data_list) - n):
-        result.append(data_list[i:i+n])
-    return result
-
-
-# param type : [11, 32, 64, 32, 1]
-def build_linear_layer(layer, linear_layers, activation, dropout_rate):
-    grapped_linear = n_gram(linear_layers)
-    for idx, line in grapped_linear:
-        layer.add_module(nn.Linear(line[0], line[1]))
-        if line[1] != 1:
-            layer.add_module(model_config.set_activation(activation))
-            layer.add_module(nn.Dropout(dropout_rate))
-    return layer
-
-
-def set_state_h_c(num_layer, hidden_size, size, cuda):
-    h_0 = Variable(torch.zeros(num_layer, size, hidden_size))
-    c_0 = Variable(torch.zeros(num_layer, size, hidden_size))
-    if cuda:
-        h_0 = h_0.cuda()
-        c_0 = c_0.cuda()
-    return (h_0, c_0)
-
-
-class Cuustom_DNN(nn.Module):
+class Custom_DNN(nn.Module):
     def __init__(self, linear_layers=None, activation='ReLU', dropout_rate=0.5):
-        super(Cuustom_DNN, self).__init__()
-        self.layer_stack = nn.Sequuential()
-        self.layer_stack = build_linear_layer(layer=self.layer_stack, linear_layers=linear_layers, activation=activation,
-                                              dropout_rate=dropout_rate)
+        super(Custom_DNN, self).__init__()
+        self.layer_stack = nn.Sequential()
+        self.layer_stack = model_config.build_linear_layer(layer=self.layer_stack, linear_layers=linear_layers,
+                                                           activation=activation,
+                                                           dropout_rate=dropout_rate)
 
     def forward(self, x):
         return self.layer_stack(x)
@@ -256,13 +230,15 @@ def model_load(model_configure):
 
 
 if __name__ == '__main__':
-    kind = 'CRNN'
+    kind = 'Custom_DNN'
     if kind == 'DNN':
         model = VanillaNetwork().cuda()
     elif kind == 'RNN':
         model = VanillaRecurrentNetwork()
     elif kind == 'CRNN':
         model = VanillaCRNNNetwork().cuda()
+    elif kind == 'Custom_DNN':
+        model = Custom_DNN(linear_layers=[11, 32, 64, 128, 64, 32, 1]).cuda()
     print("Model structure: ", model, "\n\n")
     for name, param in model.named_parameters():
         print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
