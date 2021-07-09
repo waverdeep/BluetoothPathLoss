@@ -16,25 +16,26 @@ class Custom_DNN(nn.Module):
         return self.layer_stack(x)
 
 
-class CustomRNN(nn.Module):
+class Custom_RNN(nn.Module):
     def __init__(self, input_size=11, model='LSTM', activation='ReLU', bidirectional=False,
-                 hidden_size=64, num_layers=1, linear_layers=None, dropout_rate=0.5, cuda=True):
-        super(CustomRNN, self).__init__()
+                 hidden_size=64, num_layers=1, linear_layers=None, dropout_rate=0.5, cuda=False):
+        super(Custom_RNN, self).__init__()
         self.cuda = cuda
         self.num_layers = num_layers
         self.hidden_size = hidden_size
-        self.linear_layers = linear_layers.insert(0, hidden_size)
-        self.rnn_layer01 = model_config.set_recurrent_layer(name=model, input_size=input_size, activation=activation,
+        self.linear_layers = linear_layers
+        self.linear_layers.insert(0, hidden_size)
+        self.rnn_layer01 = model_config.set_recurrent_layer(name=model, input_size=input_size,
                                                             bidirectional=bidirectional,
                                                             hidden_size=hidden_size, num_layers=num_layers)
         self.linear_stack = nn.Sequential()
-        self.linear_stack = build_linear_layer(layer=self.linear_stack, linear_layers=self.linear_layersm,
-                                               activation=activation,
-                                               dropout_rate=dropout_rate)
+        self.linear_stack = model_config.build_linear_layer(layer=self.linear_stack, linear_layers=self.linear_layers,
+                                                            activation=activation,
+                                                            dropout_rate=dropout_rate)
 
     def forward(self, x):
-        output, (h_out, _) = self.rnn_layer01(x, set_state_h_c(num_layer=self.num_layers, size=x.size(0),
-                                                               hidden_size=self.hidden_size))
+        output, (h_out, _) = self.rnn_layer01(x, model_config.set_state_h_c(num_layer=self.num_layers, size=x.size(0),
+                                                                            hidden_size=self.hidden_size, cuda=self.cuda))
         return self.linear_stack(output[:, -1, :])
 
 
@@ -239,6 +240,8 @@ if __name__ == '__main__':
         model = VanillaCRNNNetwork().cuda()
     elif kind == 'Custom_DNN':
         model = Custom_DNN(linear_layers=[11, 32, 64, 128, 64, 32, 1]).cuda()
+    elif kind == 'Custom_RNN':
+        model = Custom_RNN(linear_layers=[32, 64, 128, 64, 32, 1])
     print("Model structure: ", model, "\n\n")
     for name, param in model.named_parameters():
         print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
@@ -255,5 +258,13 @@ if __name__ == '__main__':
         print('pred : ', pred.shape)
     elif kind == 'CRNN':
         x_data = torch.empty(1, 11, 15).cuda()
+        pred = model(x_data)
+        print('pred : ', pred.shape)
+    elif kind == 'Custom_DNN':
+        x_data = torch.empty(11, ).cuda()
+        pred = model(x_data)
+        print("pred : ", pred.shape)
+    elif kind == 'Custom_RNN':
+        x_data = torch.empty(1, 8, 11)
         pred = model(x_data)
         print('pred : ', pred.shape)
