@@ -2,6 +2,7 @@
   {
     "model_type": "custom_RNN",
     "input_size": 11,
+    "sequence_length": 15,
     "activation": "ReLU",
     "bidirectional": false,
     "hidden_size": 64,

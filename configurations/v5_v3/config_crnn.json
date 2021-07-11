@@ -2,6 +2,7 @@
   {
     "model_type": "custom_CRNN",
     "input_size": 11,
+    "sequence_length": 15,
     "activation": "ReLU",
     "convolution_layer": 2,
     "bidirectional": false,
