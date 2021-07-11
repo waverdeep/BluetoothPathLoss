@@ -43,6 +43,7 @@
   },
   {
     "model_type": "Custom_DNN",
+    "sequence_length": 1,
     "input_size": [11, 32, 64, 128, 64, 32, 1],
     "activation": "ReLU",
     "dropout_rate" : 0.5,
