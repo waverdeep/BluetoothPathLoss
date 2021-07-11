@@ -1,7 +1,8 @@
 import torch
 from torch import nn
 from torch.autograd import Variable
-import model_config
+from model import model_config
+
 
 class Custom_DNN(nn.Module):
     def __init__(self, linear_layers=None, activation='ReLU', dropout_rate=0.5):
@@ -212,19 +213,59 @@ class VanillaCRNNNetwork(nn.Module):
 
 def model_load(model_configure):
     nn_model = None
-    if model_configure['model'] == 'DNN':
-        nn_model = VanillaNetwork(model_configure['input_size'], activation=model_configure['activation'],
-                                  linear=model_configure['linear'])
-    elif model_configure['model'] == 'RNN':
-        nn_model = VanillaRecurrentNetwork(input_size=model_configure['input_size'],
-                                           activation=model_configure['activation'],
-                                           linear=model_configure['linear'],
-                                           cuda=model_configure['cuda'])
-    elif model_configure['model'] == 'CRNN':
-        nn_model = VanillaCRNNNetwork(input_size=model_configure['input_size'],
-                                      activation=model_configure['activation'])
+    if 'model' in model_configure:
+        if model_configure['model'] == 'DNN':
+            nn_model = VanillaNetwork(
+                model_configure['input_size'],
+                activation=model_configure['activation'],
+                linear=model_configure['linear']
+            )
+        elif model_configure['model'] == 'RNN':
+            nn_model = VanillaRecurrentNetwork(
+                input_size=model_configure['input_size'],
+                activation=model_configure['activation'],
+                linear=model_configure['linear'],
+                cuda=model_configure['cuda']
+            )
+        elif model_configure['model'] == 'CRNN':
+            nn_model = VanillaCRNNNetwork(
+                input_size=model_configure['input_size'],
+                activation=model_configure['activation']
+            )
+    else:
+        if model_configure['model_type'] == 'Custom_DNN':
+            nn_model = Custom_DNN(
+                linear_layers=model_configure['linear_layers'],
+                activation=model_configure['activation'],
+                dropout_rate=model_configure['dropout_rate']
+            )
+        elif model_configure['model_type'] == 'Custom_RNN':
+            nn_model = Custom_RNN(
+                input_size=model_configure['input_size'],
+                model_type=model_configure['model_type'],
+                activation=model_configure['activation'],
+                bidirectional=model_configure['bidirectional'],
+                hidden_size=model_configure['hidden_size'],
+                num_layers=model_configure['num_layers'],
+                linear_layers=model_configure['linear_layers'],
+                dropout_rate=model_configure['dropout_rate'],
+                use_cuda=model_configure['use_cuda']
+            )
+        elif model_configure['model_type'] == 'Custom_CRNN':
+            nn_model = Custom_CRNN(
+                input_size=model_configure['input_size'],
+                model_type=model_configure['model_type'],
+                activation=model_configure['activation'],
+                bidirectional=model_configure['bidirectional'],
+                hidden_size=model_configure['hidden_size'],
+                num_layers=model_configure['num_layers'],
+                linear_layers=model_configure['linear_layers'],
+                dropout_rate=model_configure['dropout_rate'],
+                use_cuda=model_configure['use_cuda'],
+                convolution_layer=model_configure['convolution_layer']
+            )
 
-    if model_configure['cuda']:
+    if model_configure['use_cuda']:
         nn_model = nn_model.cuda()
 
     if 'checkpoint_path' in model_configure:
