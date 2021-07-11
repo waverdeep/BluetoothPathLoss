@@ -26,11 +26,11 @@ class PathLossWithDetailDataset(Dataset):
 
     def __getitem__(self, idx):
         pick = self.dataset[idx]
-        if self.model_type == 'DNN':
+        if self.model_type == 'DNN' or self.model_type == 'Custom_DNN':
             y_label = pick[0]
             x_data = pick[1:]
             return cast_float_tensor(x_data), cast_float_tensor(y_label)
-        elif self.model_type == 'RNN' or self.model_type == 'CRNN':
+        elif self.model_type == 'RNN' or self.model_type == 'CRNN' or self.model_type == 'Custom_RNN' or self.model_type == 'Custom_CRNN':
             y_label = pick[0][0]
             x_data = np.delete(pick, 0, axis=1)
             return cast_float_tensor(x_data), cast_float_tensor(y_label)
@@ -45,13 +45,13 @@ def load_path_loss_with_detail_dataset(input_dir, model_type='RNN', num_workers=
     setup_dataset = None
     for idx, file in enumerate(file_list):
         addition_dataset.append(pd.read_csv(file).to_numpy())
-    if model_type == 'DNN':
+    if model_type == 'DNN' or model_type == 'Custom_DNN':
         dnn_dataset = []
         for pack in addition_dataset:
             for line in pack:
                 dnn_dataset.append(line)
         setup_dataset = dnn_dataset
-    elif model_type == 'RNN' or model_type == 'CRNN':
+    elif model_type == 'RNN' or model_type == 'CRNN' or model_type == 'Custom_RNN' or model_type == 'Custom_CRNN':
         div_meter_pack = []
         rnn_dataset = []
         for n_idx, pack in enumerate(addition_dataset):
@@ -120,17 +120,17 @@ def load_path_loss_with_detail_inference_dataset(input_filepath, model_type='RNN
 
 if __name__ == '__main__':
     train_dataloader, test_dataloader, validation_dataloader = load_path_loss_with_detail_dataset(
-        '../dataset/v1/v1_scaled', model_type='RNN')
+        '../dataset/v5/new', model_type='Custom_CRNN')
     print('train_dataloader : ', len(train_dataloader))
     for data in train_dataloader:
         print(data[:][0].shape)
         print(data[:][1].shape)
         break
 
-    inference_dataloader = load_path_loss_with_detail_inference_dataset('../dataset/v1/pol_test_v1/POL_A_cs_6_20.csv')
-    for data in inference_dataloader:
-        print(data.shape)
-        break
+    # inference_dataloader = load_path_loss_with_detail_inference_dataset('../dataset/v1/pol_test_v1/POL_A_cs_6_20.csv')
+    # for data in inference_dataloader:
+    #     print(data.shape)
+    #     break
 
 
 
