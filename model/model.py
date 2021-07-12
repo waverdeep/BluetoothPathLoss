@@ -319,3 +319,9 @@ if __name__ == '__main__':
         x_data = torch.empty(1, 11, 15).cuda()
         pred = model(x_data)
         print('pred : ', pred.shape)
+
+
+
+
+# sudo docker run --gpus all -it -p 10001:10001 -p 6806-6815:6005-6015 -v ~/2021_SH_Remote:/data --ipc=host --name remote_sh_2021 ufoym/deepo:latest /bin/bash
+#  3000/tcp, 8888/tcp, 0.0.0.0:10001->10001/tcp, 0.0.0.0:6806->6006/tcp, 0.0.0.0:6807->6007/tcp, 0.0.0.0:6808->6008/tcp, 0.0.0.0:6809->6009/tcp, 0.0.0.0:6810->6010/tcp, 0.0.0.0:6811->6011/tcp, 0.0.0.0:6812->6012/tcp, 0.0.0.0:6813->6013/tcp, 0.0.0.0:6814->6014/tcp, 0.0.0.0:6815->6015/tcp                         sh_remote02
