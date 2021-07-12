@@ -254,9 +254,9 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
 
 
 if __name__ == '__main__':
-    file_path = 'configurations/v5_test/'
-    checkpoint_dir = 'checkpoints/v5_test'
-    writer_path = 'runs_v5_test'
+    file_path = 'configurations/v5_v3/'
+    checkpoint_dir = 'checkpoints/v5_v3'
+    writer_path = 'runs_v5_v3'
     checkpoint = None # 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
     file_list = tool.file_io.get_all_file_path(file_path, file_extension='json')
     for file in file_list:
@@ -266,7 +266,7 @@ if __name__ == '__main__':
         # filename = data_preprocessing.get_pure_filename(file)
         for idx, data in enumerate(json_data):
             print(idx, data)
-            message = "{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
+            message = "fig1_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
                                                         data['activation'], data['learning_rate'],
                                                         data['sequence_length'])
             if 'linear' in data:
