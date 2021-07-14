@@ -254,24 +254,59 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
 
 
 if __name__ == '__main__':
+    start_type = 'quick_start'
+
     file_path = 'configurations/v5_v3/'
     checkpoint_dir = 'checkpoints/v5_v3'
     writer_path = 'runs_v5_v3'
-    checkpoint = None # 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
-    file_list = tool.file_io.get_all_file_path(file_path, file_extension='json')
-    for file in file_list:
-        print(file)
-        with open(file) as f:
-            json_data = json.load(f)
-        # filename = data_preprocessing.get_pure_filename(file)
-        for idx, data in enumerate(json_data):
-            print(idx, data)
-            message = "fig1_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
-                                                        data['activation'], data['learning_rate'],
-                                                        data['sequence_length'])
-            if 'linear' in data:
-                message += "_{}".format(data['linear'])
-            # train(model_config=data, count=idx, writer_path=writer_path, message=message, checkpoint_dir=checkpoint_dir, checkpoint=checkpoint)
-            new_train(model_config=data, count=idx, tb_writer_path=writer_path, section_message=message)
+    if start_type != 'quick_start':
+        checkpoint = None # 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
+        file_list = tool.file_io.get_all_file_path(file_path, file_extension='json')
+        for file in file_list:
+            print(file)
+            with open(file) as f:
+                json_data = json.load(f)
+            # filename = data_preprocessing.get_pure_filename(file)
+            for idx, data in enumerate(json_data):
+                print(idx, data)
+                message = "fig2_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
+                                                            data['activation'], data['learning_rate'],
+                                                            data['sequence_length'])
+                if 'linear' in data:
+                    message += "_{}".format(data['linear'])
+                # train(model_config=data, count=idx, writer_path=writer_path, message=message, checkpoint_dir=checkpoint_dir, checkpoint=checkpoint)
+                new_train(model_config=data, count=idx, tb_writer_path=writer_path, section_message=message)
+    else:
+        # quick01
+        # data = {
+        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+        #     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 2,
+        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+        #     "use_cuda": True, "batch_size": 10000, "learning_rate": 0.0001, "epoch": 1500,
+        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
+        # }
+        # quick02
+        # data = {
+        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+        #     "convolution_layer": 2, "bidirectional": False, "hidden_size": 512, "num_layers": 1,
+        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+        #     "use_cuda": True, "batch_size": 15000, "learning_rate": 0.0001, "epoch": 1500,
+        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
+        # }
+        # quick03
+        data = {
+            "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+            "convolution_layer": 2, "bidirectional": False, "hidden_size": 512, "num_layers": 2,
+            "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+            "use_cuda": True, "batch_size": 10000, "learning_rate": 0.0001, "epoch": 1500,
+            "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
+        }
+
+        print(data)
+        message = "quick03_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
+                                                 data['activation'], data['learning_rate'],
+                                                 data['sequence_length'])
+        new_train(model_config=data, count=999, tb_writer_path=writer_path, section_message=message)
+
 
 
