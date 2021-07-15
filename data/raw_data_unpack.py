@@ -2,6 +2,7 @@ import tool.file_io as file_io
 import pandas as pd
 from model import model_pathloss
 
+
 def get_point(dir_name):
     # ex) meter_1_1/
     x = dir_name.split('_')[1]
@@ -115,7 +116,7 @@ def make_training_data(data_path, save_path, main_point):
             distance = model_pathloss.get_distance(main_point[0], main_point[1], x, y)
             fspl = model_pathloss.fspl_model(rssi)
             new_line = [distance, rssi, fspl, channel, covered, tx_power, tx_antenna_gain, rx_antenna_gain, tx_height,
-                        rx_height, tx_antenna_type, tx_board_type, x, y]
+                        rx_height, tx_antenna_type, tx_board_type] #, x, y]
             lines.append(new_line)
             new_all_pack.append(new_line)
         if len(lines) > 15:
@@ -148,7 +149,7 @@ if __name__ == '__main__':
     device01_point = [[0, 5], [5, 25], [10, 10], [15, 10], [20, 20], [25, 15]]
     device02_point = [[0, 10], [5, 5], [10, 20], [15, 15], [20, 5], [25, 10]]
     device03_point = [[0, 15], [5, 10], [10, 25], [15, 5], [20, 25], [25, 5]]
-    device04_point = [[0, 20], [5, 14], [10, 5], [15, 25], [20, 15], [25, 25]]
+    device04_point = [[0, 20], [5, 15], [10, 5], [15, 25], [20, 15], [25, 25]]
     device05_point = [[0, 25], [5, 20], [10, 15], [15, 20], [20, 20], [25, 15]]
     device_point = [device01_point, device02_point, device03_point, device04_point, device05_point]
 
@@ -159,10 +160,10 @@ if __name__ == '__main__':
     device05_point_b = [[0, 25], [5, 20], [10, 25], [15, 5], [20, 25], [25, 25]]
     device_point_b = [device01_point_b, device02_point_b, device03_point_b, device04_point_b, device05_point_b]
 
-    input_dir_path = '../dataset/v5/pol01/line'
+    input_dir_path = '../dataset/v5/pol03/line'
     # unpack_raw_data(input_dir_path, points=device_point_b, name=device, info=device_info)
     #
     dataset_path = "{}.csv".format(input_dir_path)
-    make_training_data(dataset_path, save_path='../dataset/v5/points', main_point=[0, 0])
+    make_training_data(dataset_path, save_path='../dataset/v5/new', main_point=[0, 30])
 
 
