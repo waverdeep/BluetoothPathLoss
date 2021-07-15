@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import glob
 import random
-
+from tool import file_io
 
 def make_dataset(mac_address, channel, x, y, color='r'):
     pol = []
@@ -46,20 +46,27 @@ def make_dataset(mac_address, channel, x, y, color='r'):
     # 20개의 행을 추출
     for i in range(len(file_list)):
         max_index = len(pol[i].index) - 20
+        print("{} :: {} :: {}".format(file_list[i], len(pol[i].index), max_index))
+
         if max_index < 0:
             is_ok = False
             print('데이터를 생성할 수 없습니다.')
             break
-        else :         
-            random_index = random.randint(0, max_index)
-            pol[i] = pol[i].loc[random_index:random_index+19]
+        else:
+            print(pol[i])
+            random_index = random.randint(0, max_index-21)
+            pol[i] = pol[i].iloc[random_index:random_index+19]
+            print(pol[i])
             pol[i] = pol[i].reset_index(drop=True)
+
 
     # csv 저장
     if is_ok:
         for i in range(len(file_list)):
             csv_name = mac_address + f'_{channel}_{x}_{y}_pol{i+1}.csv'
-            file_save_path = 'test_point_{}_{}/{}'.format(x, y, csv_name)
+            dir_path = "test3_point_{}_{}_{}_{}".format(mac_address, channel, x, y)
+            file_io.create_directory(dir_path)
+            file_save_path = '{}/{}'.format(dir_path, csv_name)
             # file_save_path = 'test_point_00_15/'+ csv_name
             temp = pol[i]
             temp = temp.drop(['distance', 'x', 'y'], axis=1)
@@ -67,7 +74,7 @@ def make_dataset(mac_address, channel, x, y, color='r'):
             print(csv_name + '파일 생성 완료!')
 
 
-make_dataset('fb-f8-c9-9d-d8-d6', 37, 0, 15, 'r')
+make_dataset('f9-9c-e9-5d-b9-6f', 37, 20, 25, 'b')
 
 
 
