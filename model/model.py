@@ -269,8 +269,15 @@ def model_load(model_configure):
         nn_model = nn_model.cuda()
 
     if 'checkpoint_path' in model_configure:
-        checkpoint = torch.load(model_configure['checkpoint_path'])
-        nn_model.load_state_dict(checkpoint['model_state_dict'])
+        if model_configure['use_cuda']:
+            checkpoint = torch.load(model_configure['checkpoint_path'])
+            nn_model.load_state_dict(checkpoint['model_state_dict'])
+        else:
+            ### gpu로 생성된 checkpoint를 cpu로 변경해서 사용하기 위한 코드 작성
+            device = torch.device('cpu')
+            checkpoint = torch.load(model_configure['checkpoint_path'], map_location=device)
+            nn_model.load_state_dict(checkpoint['model_state_dict'])
+
 
     return nn_model
 
