@@ -14,6 +14,8 @@ def set_activation(name):
         return nn.ELU()
     elif name == 'Tanh':
         return nn.Tanh()
+    else:
+        return nn.ReLU()
 
 
 def n_gram(data_list, n=2):
