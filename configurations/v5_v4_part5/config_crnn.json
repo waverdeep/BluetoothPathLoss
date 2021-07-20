@@ -13,12 +13,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -34,12 +34,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -55,12 +55,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -76,12 +76,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -97,12 +97,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -118,12 +118,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -139,12 +139,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -160,12 +160,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -181,12 +181,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -202,12 +202,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -223,12 +223,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -244,12 +244,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -265,12 +265,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -286,12 +286,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -307,12 +307,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -328,12 +328,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -349,12 +349,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -370,12 +370,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -391,12 +391,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -412,12 +412,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -433,12 +433,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -454,12 +454,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -475,12 +475,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -496,12 +496,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -517,12 +517,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -538,12 +538,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -559,12 +559,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -580,12 +580,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -601,12 +601,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -622,12 +622,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -643,12 +643,12 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   },
   {
     "model_type": "Custom_CRNN",
@@ -664,11 +664,11 @@
     "optimizer": "AdamW",
     "dropout_rate": 0.5,
     "use_cuda": true,
-    "batch_size": 9182,
+    "batch_size": 50000,
     "learning_rate": 0.001,
     "epoch": 1000,
     "num_workers": 8,
     "shuffle": true,
-    "input_dir": "dataset/v5/new"
+    "input_dir": "dataset/v5/all"
   }
 ]
