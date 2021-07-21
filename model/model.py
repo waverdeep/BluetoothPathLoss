@@ -43,7 +43,7 @@ class Custom_RNN(nn.Module):
 class Custom_CRNN(nn.Module):
     def __init__(self, input_size=11, model_type='LSTM', activation='ReLU', bidirectional=False,
                  hidden_size=64, num_layers=1, linear_layers=None, dropout_rate=0.5, use_cuda=True,
-                 convolution_layer=3):
+                 convolution_layer=3, use_batch_norm=False):
         super(Custom_CRNN, self).__init__()
         # convolution layer를 더 쌓는게 맞을지 고민해봐야 할것 같음
         # nn.Conv1d(input_channel, output_channel, kernel_size)\
@@ -60,7 +60,8 @@ class Custom_CRNN(nn.Module):
                                                             batch_first=True, bidirectional=bidirectional)
         self.linear_stack = nn.Sequential()
         self.linear_stack = model_config.build_linear_layer(layer=self.linear_stack, linear_layers=self.linear_layers,
-                                                            activation=activation, dropout_rate=dropout_rate)
+                                                            activation=activation, dropout_rate=dropout_rate,
+                                                            use_batch_norm=use_batch_norm)
 
     def forward(self, x):
         out = self.conv1d_stack(x)
@@ -262,7 +263,8 @@ def model_load(model_configure):
                 linear_layers=model_configure['linear_layers'],
                 dropout_rate=model_configure['dropout_rate'],
                 use_cuda=model_configure['use_cuda'],
-                convolution_layer=model_configure['convolution_layer']
+                convolution_layer=model_configure['convolution_layer'],
+                use_batch_norm=True if 'use_batch_norm' in model_configure else False # 일단 해당 속성이 있으면 하는거로
             )
 
     if model_configure['use_cuda']:
