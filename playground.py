@@ -152,7 +152,10 @@ def new_train(model_config, count, tb_writer_path, section_message):
     if use_cuda:
         criterion = criterion.cuda()
     optim = optimizer.set_optimizer(model_config['optimizer'], nn_model, model_config['learning_rate'])
-    print(type(optim))
+
+    if 'scheduler' in model_config:
+        scheduler = optimizer.set_scheduler(name=model_config['scheduler'], optim=optim,
+                                            lr_lambda=lambda epoch: 0.95 ** epoch)
     writer = use_tensorboard.set_tensorboard_writer('{}/{}_{}'.format(tb_writer_path,
                                                                       section_message,
                                                                       str(count).zfill(3)))
@@ -176,6 +179,8 @@ def new_train(model_config, count, tb_writer_path, section_message):
             optim.zero_grad()
             loss.backward()
             optim.step()
+            if 'scheduler' in model_config:
+                scheduler.step()
             writer.add_scalar('Loss/Training MSELoss', loss / 1000, epoch * len(train_dataloader) + i)
 
         if (epoch + 1) % 10 == 0:
@@ -255,7 +260,7 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
 
 
 if __name__ == '__main__':
-    start_type = 'slow' # 'quick_start'
+    start_type = 'quick_start' # 'quick_start'
 
     file_path = 'configurations/v5_v4_part5/'
     checkpoint_dir = 'checkpoints/v5_v4'
@@ -278,118 +283,129 @@ if __name__ == '__main__':
                 # train(model_config=data, count=idx, writer_path=writer_path, message=message, checkpoint_dir=checkpoint_dir, checkpoint=checkpoint)
                 new_train(model_config=data, count=idx, tb_writer_path=writer_path, section_message=message)
     else:
-        # quick01
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 2,
-        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 10000, "learning_rate": 0.0001, "epoch": 1500,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
-        # }
-        # quick02
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 2, "bidirectional": False, "hidden_size": 512, "num_layers": 1,
-        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 15000, "learning_rate": 0.0001, "epoch": 1500,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
-        # }
-        # quick03
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 2, "bidirectional": False, "hidden_size": 512, "num_layers": 2,
-        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 10000, "learning_rate": 0.0001, "epoch": 1500,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
-        # }
-        # quick04
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
-        #     "linear_layers":[128, 64, 64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 22000, "learning_rate": 0.01, "epoch": 1500,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
-        # }
-        # quick05
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
-        #     "linear_layers": [128, 64, 64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 22000, "learning_rate": 0.01, "epoch": 1500,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
-        # }
-        # quick06-2
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
-        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 10000, "learning_rate": 0.0001, "epoch": 2000,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
-        #     "checkpoint_path": "checkpoints/v5_v3/quick06_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_999.pt"
-        # }
-        # quick07
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 2,
-        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 20000, "learning_rate": 0.0001, "epoch": 2000,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
-        #     "checkpoint_path": "checkpoints/v5_v3/fig2_Custom_CRNN_AdamW_ReLU_0.001_sl15_012_epoch_999.pt"
-        # }
-        # quick06-4b
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
-        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 30000, "learning_rate": 0.0001, "epoch": 2000,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/newb",
-        #     "checkpoint_path": "checkpoints/v5_v3/quick06-2_Custom_CRNN_AdamW_ReLU_0.0001_sl15_999_epoch_1999.pt"
-        # }
-
-        # quick08
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
-        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 40000, "learning_rate": 0.001, "epoch": 2000,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
-        # }
-
-        # quick09
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "LeakyReLU",
-        #     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 2,
-        #     "linear_layers": [128, 64, 64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-        #     "use_cuda": True, "batch_size": 30000, "learning_rate": 0.01, "epoch": 2000,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
-        #     "checkpoint_path": "checkpoints/v5_v3/fig2_Custom_CRNN_AdamW_LeakyReLU_0.001_sl15_031_epoch_629.pt"
-        # }
-
-        # quick06-5
-        # data = {
-        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-        #     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
-        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.7,
-        #     "use_cuda": True, "batch_size": 50000, "learning_rate": 0.0001, "epoch": 2000,
-        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
-        #     "checkpoint_path": "checkpoints/v5_v3/quick06-2_Custom_CRNN_AdamW_ReLU_0.0001_sl15_999_epoch_1999.pt"
-        # }
-
-        # quick09-1
+        # part5-01-01
         data = {
-            "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "LeakyReLU",
-            "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 2,
-            "linear_layers": [128, 64, 64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-            "use_cuda": True, "batch_size": 30000, "learning_rate": 0.0005, "epoch": 2000,
-            "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
-            "checkpoint_path": "checkpoints/v5_v3/fig2_Custom_CRNN_AdamW_LeakyReLU_0.001_sl15_031_epoch_999.pt"
+            "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+            "convolution_layer": 2, "bidirectional": False, "hidden_size": 64, "num_layers": 1,
+            "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+            "use_cuda": True, "batch_size": 30000, "learning_rate": 0.001, "epoch": 2000,
+            "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/all",
+            "checkpoint_path": "checkpoints/v5_v4/part5_Custom_CRNN_AdamW_ReLU_0.001_sl15_000_epoch_999.pt",
+            "scheduler": "LambdaLR"
         }
 
         print(data)
-        message = "quick09-1_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
-                                                      data['activation'], data['learning_rate'],
-                                                      data['sequence_length'])
+        message = "part5-01-01_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
+                                                        data['activation'], data['learning_rate'],
+                                                        data['sequence_length'])
         new_train(model_config=data, count=999, tb_writer_path=writer_path, section_message=message)
 
 
 
+########################################################################################################################
+# quick01
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 2,
+#     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 10000, "learning_rate": 0.0001, "epoch": 1500,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
+# }
+# quick02
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 2, "bidirectional": False, "hidden_size": 512, "num_layers": 1,
+#     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 15000, "learning_rate": 0.0001, "epoch": 1500,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
+# }
+# quick03
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 2, "bidirectional": False, "hidden_size": 512, "num_layers": 2,
+#     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 10000, "learning_rate": 0.0001, "epoch": 1500,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
+# }
+# quick04
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+#     "linear_layers":[128, 64, 64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 22000, "learning_rate": 0.01, "epoch": 1500,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
+# }
+# quick05
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+#     "linear_layers": [128, 64, 64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 22000, "learning_rate": 0.01, "epoch": 1500,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new"
+# }
+# quick06-2
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+#     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 10000, "learning_rate": 0.0001, "epoch": 2000,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
+#     "checkpoint_path": "checkpoints/v5_v3/quick06_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_999.pt"
+# }
+# quick07
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 2,
+#     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 20000, "learning_rate": 0.0001, "epoch": 2000,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
+#     "checkpoint_path": "checkpoints/v5_v3/fig2_Custom_CRNN_AdamW_ReLU_0.001_sl15_012_epoch_999.pt"
+# }
+# quick06-4b
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+#     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 30000, "learning_rate": 0.0001, "epoch": 2000,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/newb",
+#     "checkpoint_path": "checkpoints/v5_v3/quick06-2_Custom_CRNN_AdamW_ReLU_0.0001_sl15_999_epoch_1999.pt"
+# }
+
+# quick08
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+#     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 40000, "learning_rate": 0.001, "epoch": 2000,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
+# }
+
+# quick09
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "LeakyReLU",
+#     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 2,
+#     "linear_layers": [128, 64, 64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 30000, "learning_rate": 0.01, "epoch": 2000,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
+#     "checkpoint_path": "checkpoints/v5_v3/fig2_Custom_CRNN_AdamW_LeakyReLU_0.001_sl15_031_epoch_629.pt"
+# }
+
+# quick06-5
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+#     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+#     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.7,
+#     "use_cuda": True, "batch_size": 50000, "learning_rate": 0.0001, "epoch": 2000,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
+#     "checkpoint_path": "checkpoints/v5_v3/quick06-2_Custom_CRNN_AdamW_ReLU_0.0001_sl15_999_epoch_1999.pt"
+# }
+
+# quick09-1
+# data = {
+#     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "LeakyReLU",
+#     "convolution_layer": 2, "bidirectional": False, "hidden_size": 256, "num_layers": 2,
+#     "linear_layers": [128, 64, 64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+#     "use_cuda": True, "batch_size": 30000, "learning_rate": 0.0005, "epoch": 2000,
+#     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/new",
+#     "checkpoint_path": "checkpoints/v5_v3/fig2_Custom_CRNN_AdamW_LeakyReLU_0.001_sl15_031_epoch_999.pt"
+# }
