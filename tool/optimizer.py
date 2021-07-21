@@ -19,3 +19,19 @@ def set_criterion(name):
         return torch.nn.MSELoss()
     elif name == 'L1Loss':
         return torch.nn.L1Loss()
+
+
+# https://www.kaggle.com/isbhargav/guide-to-pytorch-learning-rate-scheduling
+def set_scheduler(name, optim, lr_lambda):
+    if name == 'LambdaLR':
+        return torch.optim.lr_scheduler.LambdaLR(optimizer=optim, lr_lambda=lr_lambda)
+    elif name == 'MultiplicativeLR':
+        pass
+    elif name == 'StepLR':
+        pass
+    elif name == 'MultiStepLR':
+        pass
+    elif name == 'ExponentialLR':
+        pass
+
+
