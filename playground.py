@@ -22,42 +22,43 @@ import tool
 # torch.cuda.manual_seed_all(random_seed) # if use multi-GPU
 
 
-def sub_train(model_config, nn_model, dataloader, device, writer, epoch, optimizer, criterion):
-    total_label = []
-    total_pred = []
-    for i, data in enumerate(dataloader):
-        x_data = None
-        y_data = None
-        if 'model' in model_config:
-            if model_config['model'] == 'DNN':
-                x_data, y_data = data
-            elif model_config['model'] == 'RNN':
-                x_data = data[:][0]
-                y_data = data[:][1]
-            elif model_config['model'] == 'CRNN':
-                x_data = data[:][0]
-                x_data = x_data.transpose(1, 2)
-                y_data = data[:][1]
-        else:
-            if model_config['model_type'] == 'Custom_DNN':
-                x_data, y_data = data
-            elif model_config['model_type'] == 'Custom_RNN':
-                x_data = data[:][0]
-                y_data = data[:][1]
-            elif model_config['model_type'] == 'Custom_CRNN':
-                x_data = data[:][0]
-                x_data = x_data.transpose(1, 2)
-                y_data = data[:][1]
-        if device:
-            x_data = x_data.cuda()
-            y_data = y_data.cuda()
-        y_pred = nn_model(x_data).reshape(-1)
-        optimizer.zero_grad()
-        loss = criterion(y_pred, y_data)
-        writer.add_scalar('Loss/SubTrain MSELoss', loss / 1000, epoch * len(dataloader) + i)
-        loss.backward()
-        optimizer.step()
-        y_pred = y_pred.cpu()
+def valid(model_config, nn_model, dataloader, use_cuda, writer, epoch, optimizer, criterion):
+    device = torch.device(model_config['cuda_num'])
+    with torch.no_grad():
+        total_label = []
+        total_pred = []
+        for i, data in enumerate(dataloader):
+            x_data = None
+            y_data = None
+            if 'model' in model_config:
+                if model_config['model'] == 'DNN':
+                    x_data, y_data = data
+                elif model_config['model'] == 'RNN':
+                    x_data = data[:][0]
+                    y_data = data[:][1]
+                elif model_config['model'] == 'CRNN':
+                    x_data = data[:][0]
+                    x_data = x_data.transpose(1, 2)
+                    y_data = data[:][1]
+            else:
+                if model_config['model_type'] == 'Custom_DNN':
+                    x_data, y_data = data
+                elif model_config['model_type'] == 'Custom_RNN':
+                    x_data = data[:][0]
+                    y_data = data[:][1]
+                elif model_config['model_type'] == 'Custom_CRNN':
+                    x_data = data[:][0]
+                    x_data = x_data.transpose(1, 2)
+                    y_data = data[:][1]
+            if device:
+                x_data = x_data.to(device)
+                y_data = y_data.to(device)
+            y_pred = nn_model(x_data).reshape(-1)
+            loss = criterion(y_pred, y_data)
+            writer.add_scalar('Loss/Valid MSELoss', loss / 1000, epoch * len(dataloader) + i)
+            loss.backward()
+            optimizer.step()
+            y_pred = y_pred.cpu()
 
 
         total_label += y_data.tolist()
