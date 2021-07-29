@@ -3,12 +3,10 @@ from model import model
 from data import data_loader
 import numpy as np
 import tool.optimizer as optimizer
-import data.data_preprocessing as data_preprocessing
 import json
 from tool import metrics
 import pandas as pd
 from tool import use_tensorboard
-import random
 import tool
 # randomness
 # random_seed = 42
