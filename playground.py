@@ -59,20 +59,20 @@ def valid(model_config, nn_model, dataloader, use_cuda, writer, epoch, optimizer
             y_pred = y_pred.cpu()
 
 
-        total_label += y_data.tolist()
-        total_pred += y_pred.tolist()
+            total_label += y_data.tolist()
+            total_pred += y_pred.tolist()
 
-    test_mse_score = metrics.mean_squared_error(total_label, total_pred)
-    test_r2_score = metrics.r2_score(total_label, total_pred)
-    test_mae_score = metrics.mean_absolute_error(total_label, total_pred)
-    test_rmse_score = np.sqrt(test_mse_score)
-    test_mape_score = metrics.mean_absolute_percentage_error(total_label, total_pred)
+        test_mse_score = metrics.mean_squared_error(total_label, total_pred)
+        test_r2_score = metrics.r2_score(total_label, total_pred)
+        test_mae_score = metrics.mean_absolute_error(total_label, total_pred)
+        test_rmse_score = np.sqrt(test_mse_score)
+        test_mape_score = metrics.mean_absolute_percentage_error(total_label, total_pred)
 
-    writer.add_scalar('MSE Score/sub_train', test_mse_score, epoch)
-    writer.add_scalar('R2 Score/sub_train', test_r2_score, epoch)
-    writer.add_scalar('MAE Score/sub_train', test_mae_score, epoch)
-    writer.add_scalar('RMSE Score/sub_train', test_rmse_score, epoch)
-    writer.add_scalar('MAPE Score/sub_train', test_mape_score, epoch)
+        writer.add_scalar('MSE Score/valid', test_mse_score, epoch)
+        writer.add_scalar('R2 Score/valid', test_r2_score, epoch)
+        writer.add_scalar('MAE Score/valid', test_mae_score, epoch)
+        writer.add_scalar('RMSE Score/valid', test_rmse_score, epoch)
+        writer.add_scalar('MAPE Score/valid', test_mape_score, epoch)
 
 
 def test(model_config, nn_model, dataloader, device, writer, epoch, criterion):
