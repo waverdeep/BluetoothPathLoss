@@ -12,7 +12,7 @@ def cast_float_tensor(data):
 
 def data_split(dataset, test_size=0.3):
     train_data, test_data = train_test_split(dataset, test_size=test_size, shuffle=True, random_state=42)
-    test_data, valid_data = train_test_split(test_data, test_size=test_size, shuffle=True, random_state=42)
+    test_data, valid_data = train_test_split(test_data, test_size=0.5, shuffle=True, random_state=42)
     return train_data, test_data, valid_data
 
 
