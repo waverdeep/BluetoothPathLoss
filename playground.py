@@ -190,6 +190,9 @@ def new_train(model_config, count, tb_writer_path, section_message):
             torch.save({epoch: epoch, 'model': nn_model, 'model_state_dict': nn_model.state_dict()},
                        "{}/{}_{}_epoch_{}.pt".format(checkpoint_dir, message, str(count).zfill(3), epoch))
             saver.update(output)
+    for i in range(10):
+        valid(model_config=model_config, nn_model=nn_model, dataloader=valid_dataloader, device=device,
+                  writer=writer, epoch=i, optimizer=optim, criterion=criterion)
     use_tensorboard.close_tensorboard_writer(writer)
 
     saver = pd.DataFrame(saver)
