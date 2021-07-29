@@ -46,12 +46,13 @@ def build_conv1d_layer(layer, convolution_layers, input_size):
     return layer
 
 
-def set_state_h_c(num_layer, hidden_size, size, cuda):
+def set_state_h_c(num_layer, hidden_size, size, cuda, cuda_num):
     h_0 = Variable(torch.zeros(num_layer, size, hidden_size))
     c_0 = Variable(torch.zeros(num_layer, size, hidden_size))
     if cuda:
-        h_0 = h_0.cuda()
-        c_0 = c_0.cuda()
+        device = torch.device(cuda_num)
+        h_0 = h_0.to(device)
+        c_0 = c_0.to(device)
     return (h_0, c_0)
 
 
