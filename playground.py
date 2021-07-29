@@ -75,7 +75,8 @@ def valid(model_config, nn_model, dataloader, use_cuda, writer, epoch, optimizer
         writer.add_scalar('MAPE Score/valid', test_mape_score, epoch)
 
 
-def test(model_config, nn_model, dataloader, device, writer, epoch, criterion):
+def test(model_config, nn_model, dataloader, use_cuda, writer, epoch, criterion):
+    device = torch.device(model_config['cuda_num'])
     with torch.no_grad():
         total_label = []
         total_pred = []
@@ -103,8 +104,8 @@ def test(model_config, nn_model, dataloader, device, writer, epoch, criterion):
                     x_data = x_data.transpose(1, 2)
                     y_data = data[:][1]
             if device:
-                x_data = x_data.cuda()
-                y_data = y_data.cuda()
+                x_data = x_data.to(device)
+                y_data = y_data.to(device)
             y_pred = nn_model(x_data).reshape(-1)
             loss = criterion(y_pred, y_data)
             writer.add_scalar('Loss/Test MSELoss', loss / 1000, epoch * len(dataloader) + i)
@@ -132,6 +133,7 @@ def test(model_config, nn_model, dataloader, device, writer, epoch, criterion):
 
 
 def new_train(model_config, count, tb_writer_path, section_message):
+    device = torch.device(model_config['cuda_num'])
     saver = {}
     use_cuda = model_config['use_cuda']
     num_epochs = model_config['epoch']
@@ -149,7 +151,7 @@ def new_train(model_config, count, tb_writer_path, section_message):
     nn_model = model.model_load(model_configure=model_config)
     criterion = optimizer.set_criterion(model_config['criterion'])
     if use_cuda:
-        criterion = criterion.cuda()
+        criterion = criterion.to(device)
     optim = optimizer.set_optimizer(model_config['optimizer'], nn_model, model_config['learning_rate'])
 
     if 'scheduler' in model_config:
@@ -170,8 +172,8 @@ def new_train(model_config, count, tb_writer_path, section_message):
                 x_data = x_data.transpose(1, 2)
                 y_data = picked[:][1]
             if use_cuda:
-                x_data = x_data.cuda()
-                y_data = y_data.cuda()
+                x_data = x_data.to(device)
+                y_data = y_data.to(device)
 
             y_pred = nn_model(x_data).reshape(-1)
             loss = criterion(y_pred, y_data)
@@ -183,9 +185,7 @@ def new_train(model_config, count, tb_writer_path, section_message):
             writer.add_scalar('Loss/Training MSELoss', loss / 1000, epoch * len(train_dataloader) + i)
 
         if (epoch + 1) % 10 == 0:
-            sub_train(model_config=model_config, nn_model=nn_model, dataloader=valid_dataloader, device=use_cuda,
-                      writer=writer, epoch=epoch, optimizer=optim, criterion=criterion)
-            output = test(model_config=model_config, nn_model=nn_model, dataloader=test_dataloader, device=use_cuda,
+            output = test(model_config=model_config, nn_model=nn_model, dataloader=test_dataloader, use_cuda=use_cuda,
                           writer=writer, epoch=epoch, criterion=criterion)
             torch.save({epoch: epoch, 'model': nn_model, 'model_state_dict': nn_model.state_dict()},
                        "{}/{}_{}_epoch_{}.pt".format(checkpoint_dir, message, str(count).zfill(3), epoch))
