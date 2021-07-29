@@ -21,6 +21,8 @@ def make_dataset(mac_address, channel, x, y, color='r'):
     # 파일 탐색
     file_list = glob.glob(file_path)
     file_list.sort()
+    print(file_list)
+    exit(0)
 
     # 폴 별 데이터 추출
     # pol[0] = 0,0
