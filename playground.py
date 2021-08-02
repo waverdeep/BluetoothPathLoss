@@ -20,7 +20,7 @@ import tool
 # torch.cuda.manual_seed_all(random_seed) # if use multi-GPU
 
 
-def valid(model_config, nn_model, dataloader, use_cuda, writer, epoch, optimizer, criterion):
+def valid(model_config, nn_model, dataloader, writer, epoch, optimizer, criterion):
     device = torch.device(model_config['cuda_num'])
     with torch.no_grad():
         total_label = []
@@ -54,8 +54,6 @@ def valid(model_config, nn_model, dataloader, use_cuda, writer, epoch, optimizer
             y_pred = nn_model(x_data).reshape(-1)
             loss = criterion(y_pred, y_data)
             writer.add_scalar('Loss/Valid MSELoss', loss / 1000, epoch * len(dataloader) + i)
-            loss.backward()
-            optimizer.step()
             y_pred = y_pred.cpu()
 
 
@@ -191,7 +189,7 @@ def new_train(model_config, count, tb_writer_path, section_message):
                        "{}/{}_{}_epoch_{}.pt".format(checkpoint_dir, message, str(count).zfill(3), epoch))
             saver.update(output)
     for i in range(10):
-        valid(model_config=model_config, nn_model=nn_model, dataloader=valid_dataloader, device=device,
+        valid(model_config=model_config, nn_model=nn_model, dataloader=valid_dataloader,
                   writer=writer, epoch=i, optimizer=optim, criterion=criterion)
     use_tensorboard.close_tensorboard_writer(writer)
 
@@ -255,7 +253,7 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
                        "{}/{}_{}_epoch_{}.pt".format(checkpoint_dir, message, str(count).zfill(3), epoch))
             saver.update(output)
     for i in range(10):
-        valid(model_config=model_config, nn_model=nn_model, dataloader=valid_dataloader, device=device,
+        valid(model_config=model_config, nn_model=nn_model, dataloader=valid_dataloader,
                   writer=writer, epoch=i, optimizer=optim, criterion=criterion)
     use_tensorboard.close_tensorboard_writer(writer)
 
@@ -264,11 +262,12 @@ def train(model_config, count, writer_path, message, checkpoint_dir, checkpoint=
 
 
 if __name__ == '__main__':
-    start_type = 'quick_start' # 'quick_start'
+    start_type = 'slow_start' # 'quick_start'  # 'slow_start'
+    file_path = 'configurations/v6_v2_part1'
+    checkpoint_dir = 'checkpoints/v6_v2'
+    writer_path = 'runs_v6_v2'
+    cuda_device = 'cuda:1'
 
-    file_path = 'configurations/v5_v4_part5/'
-    checkpoint_dir = 'checkpoints/v5_v4'
-    writer_path = 'runs_v5_v4'
     if start_type != 'quick_start':
         checkpoint = None # 'checkpoints_all/CRNN_Adam_LeakyReLU_0.001_sl15_010_epoch_729.pt'
         file_list = tool.file_io.get_all_file_path(file_path, file_extension='json')
@@ -276,30 +275,67 @@ if __name__ == '__main__':
             print(file)
             with open(file) as f:
                 json_data = json.load(f)
-            # filename = data_preprocessing.get_pure_filename(file)
+
             for idx, data in enumerate(json_data):
                 print(idx, data)
-                message = "part5_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
+                message = "part1_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
                                                             data['activation'], data['learning_rate'],
                                                             data['sequence_length'])
+                data['cuda_num'] = cuda_device
                 if 'linear' in data:
                     message += "_{}".format(data['linear'])
                 # train(model_config=data, count=idx, writer_path=writer_path, message=message, checkpoint_dir=checkpoint_dir, checkpoint=checkpoint)
                 new_train(model_config=data, count=idx, tb_writer_path=writer_path, section_message=message)
     else:
-        # part5-01-01
+        # quick_01-01
         data = {
             "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
-            "convolution_layer": 2, "bidirectional": False, "hidden_size": 64, "num_layers": 1,
+            "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
             "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
-            "use_cuda": True, "batch_size": 30000, "learning_rate": 0.001, "epoch": 2000,
-            "num_workers": 8, "shuffle": True, "input_dir": "dataset/v5/all",
-            "checkpoint_path": "checkpoints/v5_v4/part5_Custom_CRNN_AdamW_ReLU_0.001_sl15_000_epoch_999.pt",
-            "scheduler": "LambdaLR"
+            "use_cuda": True, "batch_size": 50000, "learning_rate": 0.001, "epoch": 5000,
+            "num_workers": 8, "shuffle": True, "input_dir": "dataset/v6/points",
+            "checkpoint_path": "test_checkpoints/quick06-4b_Custom_CRNN_AdamW_ReLU_0.0001_sl15_999_epoch_1279.pt"
         }
+        # # quick_01-02
+        # data = {
+        #     "model_type": "Custßßom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+        #     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+        #     "use_cuda": True, "batch_size": 50000, "learning_rate": 0.00001, "epoch": 2000,
+        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v6/points",
+        #     "checkpoint_path": "test_checkpoints/quick06-4b_Custom_CRNN_AdamW_ReLU_0.0001_sl15_999_epoch_1279.pt"
+        # }
+        # # quick_02-01
+        data = {
+            "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+            "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+            "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+            "use_cuda": True, "batch_size": 80000, "learning_rate": 0.001, "epoch": 5000,
+            "num_workers": 8, "shuffle": True, "input_dir": "dataset/v6/total_5_6",
+            "checkpoint_path": "test_checkpoints/quick06-4b_Custom_CRNN_AdamW_ReLU_0.0001_sl15_999_epoch_1279.pt"
+        }
+        # # quick_02-02
+        # data = {
+        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+        #     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+        #     "use_cuda": True, "batch_size": 80000, "learning_rate": 0.01, "epoch": 2000,
+        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v6/total_5_6",
+        #     "checkpoint_path": "test_checkpoints/quick06-4b_Custom_CRNN_AdamW_ReLU_0.0001_sl15_999_epoch_1279.pt"
+        # }
+        # quick_02-03
+        # data = {
+        #     "model_type": "Custom_CRNN", "input_size": 11, "sequence_length": 15, "activation": "ReLU",
+        #     "convolution_layer": 1, "bidirectional": False, "hidden_size": 256, "num_layers": 1,
+        #     "linear_layers": [64, 1], "criterion": "MSELoss", "optimizer": "AdamW", "dropout_rate": 0.5,
+        #     "use_cuda": True, "batch_size": 80000, "learning_rate": 0.1, "epoch": 2000,
+        #     "num_workers": 8, "shuffle": True, "input_dir": "dataset/v6/total_5_6",
+        #     "checkpoint_path": "test_checkpoints/quick06-4b_Custom_CRNN_AdamW_ReLU_0.0001_sl15_999_epoch_1279.pt"
+        # }
 
         print(data)
-        message = "part5-01-01_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
+        data['cuda_num'] = cuda_device
+        message = "quick_02-01_{}_{}_{}_{}_sl{}".format(data['model_type'], data['optimizer'],
                                                         data['activation'], data['learning_rate'],
                                                         data['sequence_length'])
         new_train(model_config=data, count=999, tb_writer_path=writer_path, section_message=message)
