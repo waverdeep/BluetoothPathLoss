@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from torch.autograd import Variable
-from model import model_config
+import model_config
 
 
 class Custom_DNN(nn.Module):
@@ -44,7 +44,7 @@ class Custom_RNN(nn.Module):
 class Custom_CRNN(nn.Module):
     def __init__(self, input_size=11, model_type='LSTM', activation='ReLU', bidirectional=False,
                  hidden_size=64, num_layers=1, linear_layers=None, dropout_rate=0.5, use_cuda=True,
-                 convolution_layer=3, use_batch_norm=False, cuda_num='cuda:0'):
+                 convolution_layer=3, use_batch_norm=True, cuda_num='cuda:0'):
         super(Custom_CRNN, self).__init__()
         # convolution layer를 더 쌓는게 맞을지 고민해봐야 할것 같음
         # nn.Conv1d(input_channel, output_channel, kernel_size)\
@@ -284,11 +284,12 @@ def model_load(model_configure):
             checkpoint = torch.load(model_configure['checkpoint_path'], map_location=device)
             nn_model.load_state_dict(checkpoint['model_state_dict'])
 
+    print("Model structure: ", model, "\n\n")
     return nn_model
 
 
 if __name__ == '__main__':
-    kind = 'Custom_RNN'
+    kind = 'Custom_CRNN'
     if kind == 'DNN':
         model = VanillaNetwork().cuda()
     elif kind == 'RNN':
@@ -306,29 +307,29 @@ if __name__ == '__main__':
         print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
 
     # model test
-
-    if kind == 'DNN':
-        x_data = torch.empty(8,).cuda()
-        pred = model(x_data)
-        print("pred : ", pred.shape)
-    elif kind == 'RNN':
-        x_data = torch.empty(1, 8, 8)
-        pred = model(x_data)
-        print('pred : ', pred.shape)
-    elif kind == 'CRNN':
-        x_data = torch.empty(1, 11, 15).cuda()
-        pred = model(x_data)
-        print('pred : ', pred.shape)
-    elif kind == 'Custom_DNN':
-        x_data = torch.empty(11, ).cuda()
-        pred = model(x_data)
-        print("pred : ", pred.shape)
-    elif kind == 'Custom_RNN':
-        x_data = torch.empty(1, 8, 11).cuda()
-        pred = model(x_data)
-        print('pred : ', pred.shape)
-    elif kind == 'Custom_CRNN':
-        x_data = torch.empty(1, 11, 15).cuda()
-        pred = model(x_data)
-        print('pred : ', pred.shape)
+    with torch.no_grad():
+        if kind == 'DNN':
+            x_data = torch.empty(8,).cuda()
+            pred = model(x_data)
+            print("pred : ", pred.shape)
+        elif kind == 'RNN':
+            x_data = torch.empty(1, 8, 8)
+            pred = model(x_data)
+            print('pred : ', pred.shape)
+        elif kind == 'CRNN':
+            x_data = torch.empty(1, 11, 15).cuda()
+            pred = model(x_data)
+            print('pred : ', pred.shape)
+        elif kind == 'Custom_DNN':
+            x_data = torch.empty(11, ).cuda()
+            pred = model(x_data)
+            print("pred : ", pred.shape)
+        elif kind == 'Custom_RNN':
+            x_data = torch.empty(1, 8, 11).cuda()
+            pred = model(x_data)
+            print('pred : ', pred.shape)
+        elif kind == 'Custom_CRNN':
+            x_data = torch.empty(2, 11, 15).cuda()
+            pred = model(x_data)
+            print('pred : ', pred.shape)
 
