@@ -37,7 +37,7 @@ class PathLossWithDetailDataset(Dataset):
 
 
 def load_path_loss_with_detail_dataset(input_dir, model_type='RNN', num_workers=4, batch_size=128,
-                                       shuffle=True, input_size=10):
+                                       shuffle=True, input_size=10, various_input=True):
     # 파일들이 저장되었는 경로를 받아 파일 리스트를 얻어냄
     file_list = file_io.get_all_file_path(input_dir, file_extension='csv')
     # csv에 있는 모든 데이터를 다 꺼내서 넘파이로 만듬
@@ -64,6 +64,8 @@ def load_path_loss_with_detail_dataset(input_dir, model_type='RNN', num_workers=
         for n_idx, pack in enumerate(div_meter_pack):
             for i in range(len(pack)-input_size):
                 rnn_dataset.append(pack[i:i+input_size])
+            for i in range(len(pack)-input_size):
+                rnn_dataset.append(pack[i:i+np.random.randint(input_size-5)+5])
         rnn_dataset = np.array(rnn_dataset)
         setup_dataset = rnn_dataset
 
