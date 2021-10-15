@@ -1,7 +1,6 @@
 import math
 from itertools import combinations
 import time
-import positioning
 import model.model_pathloss as model_pathloss
 
 
