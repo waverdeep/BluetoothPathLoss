@@ -1,0 +1,75 @@
+import torch
+import pandas as pd
+from torch.utils.data import DataLoader, Dataset
+from sklearn.model_selection import train_test_split
+import numpy as np
+from tool import file_io
+
+
+def cast_float_tensor(data):
+    return torch.tensor(data, dtype=torch.float)
+
+
+def data_split(dataset, test_size=0.3, shuffle=True):
+    train_data, dev_data = train_test_split(dataset, test_size=test_size, shuffle=shuffle, random_state=42)
+    valid_data, test_data = train_test_split(dev_data, test_size=0.5, shuffle=shuffle, random_state=42)
+    return train_data, valid_data, test_data
+
+
+class PathLossWithDetailDataset(Dataset):
+    def __init__(self, input_data,  model_type='CRNN'):
+        self.model_type = model_type
+        self.dataset = input_data
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, idx):
+        pick = self.dataset[idx]
+        y_label = pick[0][0]
+        x_data = np.delete(pick, 0, axis=1)
+        return cast_float_tensor(x_data), cast_float_tensor(y_label)
+
+
+def load_path_loss_with_detail_dataset(input_dir, model_type='CRNN', num_workers=8, batch_size=128,
+                                       shuffle=True, input_size=15, various_input=False):
+    # 파일들이 저장되었는 경로를 받아 파일 리스트를 얻어냄
+    file_list = file_io.get_all_file_path(input_dir, file_extension='csv')
+    # csv에 있는 모든 데이터를 다 꺼내서 넘파이로 만듬
+    addition_dataset = []
+    setup_dataset = None
+    for idx, file in enumerate(file_list):
+        addition_dataset.append(pd.read_csv(file).to_numpy())
+
+    div_meter_pack = []
+    rnn_dataset = []
+    for n_idx, pack in enumerate(addition_dataset):
+        label = pack[:, 0].tolist()
+        label = list(set(label))
+        temp_pack = pd.DataFrame(pack)
+        for key in label:
+            div_meter_pack.append(temp_pack[temp_pack[0] == key].to_numpy())
+
+    for n_idx, pack in enumerate(div_meter_pack):
+        for i in range(len(pack)-input_size):
+            rnn_dataset.append(pack[i:i+input_size])
+        # if various_input is True:
+        #     for i in range(len(pack)-input_size):
+        #         rnn_dataset.append(pack[i:i+np.random.randint(input_size-7)+7])
+    rnn_dataset = np.array(rnn_dataset)
+    setup_dataset = rnn_dataset
+
+    train_data, valid_data, test_data = data_split(setup_dataset, shuffle=shuffle)
+    pathloss_train_dataset = PathLossWithDetailDataset(input_data=train_data,
+                                                       model_type=model_type)
+    pathloss_test_dataset = PathLossWithDetailDataset(input_data=test_data,
+                                                      model_type=model_type)
+    pathloss_valid_dataset = PathLossWithDetailDataset(input_data=valid_data,
+                                                       model_type=model_type)
+    pathloss_train_dataloader = DataLoader(pathloss_train_dataset, batch_size=batch_size, shuffle=shuffle,
+                                           num_workers=num_workers)
+    pathloss_test_dataloader = DataLoader(pathloss_test_dataset, batch_size=batch_size, shuffle=shuffle,
+                                          num_workers=num_workers)
+    pathloss_valid_dataloader = DataLoader(pathloss_valid_dataset, batch_size=batch_size, shuffle=shuffle,
+                                           num_workers=num_workers)
+    return pathloss_train_dataloader, pathloss_valid_dataloader, pathloss_test_dataloader
