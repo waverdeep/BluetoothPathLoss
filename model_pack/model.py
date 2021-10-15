@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from torch.autograd import Variable
-import model_config
+from model_pack import model_config
 
 
 class Custom_DNN(nn.Module):
@@ -284,7 +284,7 @@ def model_load(model_configure):
             checkpoint = torch.load(model_configure['checkpoint_path'], map_location=device)
             nn_model.load_state_dict(checkpoint['model_state_dict'])
 
-    print("Model structure: ", model, "\n\n")
+    print("Model structure: ", nn_model, "\n\n")
     return nn_model
 
 

@@ -26,16 +26,16 @@ def n_gram(data_list, n=2):
 
 
 # param type : [11, 32, 64, 32, 1]
-def build_linear_layer(layer, linear_layers, activation, dropout_rate, use_batch_norm=False):
+def build_linear_layer(layer, linear_layers, activation, dropout_rate, use_batch_norm=True):
     grapped_linear = n_gram(linear_layers)
     for idx, line in enumerate(grapped_linear):
         layer.add_module("linear_{}".format(idx), nn.Linear(line[0], line[1]))
         if line[1] != 1:
-            layer.add_module("activation_{}".format(idx), set_activation(activation))
             if use_batch_norm:
                 layer.add_module('bn_{}'.format(idx), nn.BatchNorm1d(line[1]))
             else:
                 layer.add_module("dropout_{}".format(idx), nn.Dropout(dropout_rate))
+            layer.add_module("activation_{}".format(idx), set_activation(activation))
     return layer
 
 
