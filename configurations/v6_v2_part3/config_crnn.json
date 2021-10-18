@@ -15,7 +15,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -36,7 +36,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -57,7 +57,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -78,7 +78,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -99,7 +99,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -120,7 +120,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -141,7 +141,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -162,7 +162,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -183,7 +183,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -204,7 +204,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -225,7 +225,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -246,7 +246,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -267,7 +267,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -288,7 +288,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -309,7 +309,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -330,7 +330,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -351,7 +351,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -372,7 +372,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -393,7 +393,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -414,7 +414,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -435,7 +435,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -456,7 +456,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -477,7 +477,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -498,7 +498,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -519,7 +519,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -540,7 +540,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -561,7 +561,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"
@@ -582,7 +582,7 @@
     "use_cuda": true,
     "batch_size": 50000,
     "learning_rate": 0.001,
-    "epoch": 5000,
+    "epoch": 2500,
     "num_workers": 8,
     "shuffle": true,
     "input_dir": "dataset/v6/total_5_6"

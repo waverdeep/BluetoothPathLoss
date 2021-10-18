@@ -65,6 +65,7 @@ def train(train_loader, epoch, config, device, model, criterion, writer, optim):
     #                  desc='{}/{} epoch train ... '.format(epoch, config['epoch']))
     for batch_idx, data in enumerate(train_loader):
         x_data = data[:][0].transpose(1, 2)
+        # print(x_data.size())
         y_data = data[:][1]
 
         if config['use_cuda']:
@@ -327,7 +328,455 @@ if __name__ == '__main__':
         "checkpoint_dir": "checkpoints/2021_10_15"
         # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
     }
+    # CRNN-VSeq-ReLU-Adam-T07
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "ReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 512,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "Adam",
+        "dropout_rate": 0.7,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-ReLU-Adam-T07",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
 
+    }
+    # CRNN-VSeq-ReLU-AdaGrad-T08
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "ReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdaGrad",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-ReLU-AdaGrad-T08",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-ReLU-SGD-T09
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "ReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "SGD",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-ReLU-SGD-T09",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-ReLU-SGD-T10
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "ReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 512,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "SGD",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-ReLU-SGD-T10",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-ReLU-SGD-T11
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "ReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 512,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "SGD",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.01,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-ReLU-SGD-T11",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-ReLU-SGD-T12
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "ReLU",
+        "convolution_layer": 4,
+        "bidirectional": False,
+        "hidden_size": 512,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "SGD",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.005,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-ReLU-SGD-T12",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-LeakyReLU-AdamW-T13
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "LeakyReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdamW",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-LeakyReLU-AdamW-T13",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-PReLU-AdamW-T14
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "PReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdamW",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-PReLU-AdamW-T14",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-PReLU-AdamW-T15
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "PReLU",
+        "convolution_layer": 4,
+        "bidirectional": False,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdamW",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 500,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-PReLU-AdamW-T15",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-PReLU-AdamW-T16
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "PReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 512,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdamW",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 500,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-PReLU-AdamW-T16",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-PReLU-AdamW-T17
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "PReLU",
+        "convolution_layer": 4,
+        "bidirectional": False,
+        "hidden_size": 512,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdamW",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 500,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-PReLU-AdamW-T17",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-PReLU-AdaDelta-T18
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "PReLU",
+        "convolution_layer": 4,
+        "bidirectional": False,
+        "hidden_size": 512,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdaDelta",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.05,
+        "epoch": 500,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-PReLU-AdaDelta-T18",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-PReLU-AdaDelta-T19
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "PReLU",
+        "convolution_layer": 4,
+        "bidirectional": False,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "linear_layers": [64, 32, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdaDelta",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.005,
+        "epoch": 500,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-PReLU-AdaDelta-T19",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-PReLU-AdamW-T20
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 10,
+        "activation": "PReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdamW",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-PReLU-AdamW-T20",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+    # CRNN-VSeq-PReLU-AdamW-T21
+    configuration = {
+        "model_type": "CRNN",
+        "input_size": 11,
+        "sequence_length": 18,
+        "activation": "PReLU",
+        "convolution_layer": 2,
+        "bidirectional": False,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "AdamW",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 100,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-PReLU-AdamW-T21",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
+
+    # CRNN-VSeq-PReLU-AdamW-T24
+    configuration = {
+        "model_type": "DilatedCRNN",
+        "input_size": 11,
+        "sequence_length": 15,
+        "activation": "PReLU",
+        "convolution_layer": 4,
+        "bidirectional": False,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "linear_layers": [64, 1],
+        "criterion": "MSELoss",
+        "optimizer": "Adam",
+        "dropout_rate": 0.5,
+        "use_cuda": True,
+        "cuda_num": "cuda:0",
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "epoch": 500,
+        "num_workers": 8,
+        "shuffle": True,
+        "input_dir": "dataset/v7_all/point_all_v6",
+        "tensorboard_writer_path": "runs_2021_10_15",
+        "section_message": "CRNN-VSeq-ReLU-Adam-T25",
+        "checkpoint_dir": "checkpoints/2021_10_15"
+        # "checkpoint_path": "checkpoints/2021_09_16/quick_02-03_Custom_CRNN_AdamW_ReLU_0.001_sl15_999_epoch_1999.pt"
+
+    }
     print(">>> Training Bluetooth PathLoss <<<")
     print("train configuration ->->->")
     print(configuration)
