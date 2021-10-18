@@ -2,6 +2,52 @@ import torch
 from torch import nn
 from torch.autograd import Variable
 from model_pack import model_config
+import collections
+
+
+class DilatedCRNN(nn.Module):
+    def __init__(self):
+        super(DilatedCRNN, self).__init__()
+        self.encoder = nn.Sequential(
+            collections.OrderedDict(
+                [
+                    ('encoder_conv01', nn.Conv1d(11, 48, kernel_size=3, stride=1, dilation=2, padding=1)),
+                    ('encoder_bn01', nn.BatchNorm1d(48)),
+                    ('encoder_relu01', nn.ReLU()),
+                    ('encoder_conv02', nn.Conv1d(48, 48, kernel_size=5, stride=1, dilation=2, padding=1)),
+                    ('encoder_bn02', nn.BatchNorm1d(48)),
+                    ('encoder_relu02', nn.ReLU()),
+                    ('encoder_conv03', nn.Conv1d(48, 48, kernel_size=3, stride=1, dilation=2, padding=1)),
+                    ('encoder_bn03', nn.BatchNorm1d(48)),
+                    ('encoder_relu03', nn.ReLU()),
+                ]
+            )
+        )
+
+        self.regression = nn.Sequential(
+            collections.OrderedDict(
+                [
+                    ('regression_lstm01', nn.LSTM(input_size=48, hidden_size=128, num_layers=2, batch_first=True,
+                                                  bidirectional=True)),
+                ]
+            )
+        )
+
+        self.post = nn.Sequential(
+            collections.OrderedDict(
+                [
+                    ('regression_linear01', nn.Linear(256, 128)),
+                    ('regression_bn01', nn.BatchNorm1d(128)),
+                    ('regression_linear02', nn.Linear(128, 1))
+                ]
+            )
+        )
+
+    def forward(self, x):
+        out = self.encoder(x)
+        out = out.transpose(1, 2)
+        out, (h_out, _) = self.regression(out) #, model_config.set_state_h_c(num_layer=2, size=5, hidden_size=128, cuda=False, cuda_num="cuda:0"))
+        return self.post(out[:, -1, :])
 
 
 class CRNN(nn.Module):
@@ -36,20 +82,23 @@ class CRNN(nn.Module):
 
 
 def model_load(model_configure):
-    nn_model = CRNN(
-        input_size=model_configure['input_size'],
-        model_type=model_configure['model_type'],
-        activation=model_configure['activation'],
-        bidirectional=model_configure['bidirectional'],
-        hidden_size=model_configure['hidden_size'],
-        num_layers=model_configure['num_layers'],
-        linear_layers=model_configure['linear_layers'],
-        dropout_rate=model_configure['dropout_rate'],
-        use_cuda=model_configure['use_cuda'],
-        convolution_layer=model_configure['convolution_layer'],
-        cuda_num=model_configure['cuda_num'],
-        use_batch_norm=True if 'use_batch_norm' in model_configure else False # 일단 해당 속성이 있으면 하는거로
-    )
+    if model_configure['model_type'] == 'Custom_CRNN':
+        nn_model = CRNN(
+            input_size=model_configure['input_size'],
+            model_type=model_configure['model_type'],
+            activation=model_configure['activation'],
+            bidirectional=model_configure['bidirectional'],
+            hidden_size=model_configure['hidden_size'],
+            num_layers=model_configure['num_layers'],
+            linear_layers=model_configure['linear_layers'],
+            dropout_rate=model_configure['dropout_rate'],
+            use_cuda=model_configure['use_cuda'],
+            convolution_layer=model_configure['convolution_layer'],
+            cuda_num=model_configure['cuda_num'],
+            use_batch_norm=True if 'use_batch_norm' in model_configure else False # 일단 해당 속성이 있으면 하는거로
+        )
+    elif model_configure['model_type'] == 'DilatedCRNN':
+        nn_model = DilatedCRNN()
 
     if model_configure['use_cuda']:
         device = torch.device(model_configure['cuda_num'])
@@ -67,3 +116,10 @@ def model_load(model_configure):
 
     print("Model structure: ", nn_model, "\n\n")
     return nn_model
+
+
+if __name__ == '__main__':
+    model = DilatedCRNN()
+    data = torch.randn(10, 11, 15)
+    out_data = model(data)
+    print(out_data.size())
