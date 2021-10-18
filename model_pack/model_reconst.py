@@ -11,14 +11,14 @@ class DilatedCRNN(nn.Module):
         self.encoder = nn.Sequential(
             collections.OrderedDict(
                 [
-                    ('encoder_conv01', nn.Conv1d(11, 48, kernel_size=3, stride=1, dilation=2, padding=1)),
-                    ('encoder_bn01', nn.BatchNorm1d(48)),
+                    ('encoder_conv01', nn.Conv1d(11, 512, kernel_size=3, stride=1, dilation=2, padding=1)),
+                    ('encoder_bn01', nn.BatchNorm1d(512)),
                     ('encoder_relu01', nn.ReLU()),
-                    ('encoder_conv02', nn.Conv1d(48, 48, kernel_size=5, stride=1, dilation=2, padding=1)),
-                    ('encoder_bn02', nn.BatchNorm1d(48)),
+                    ('encoder_conv02', nn.Conv1d(512, 512, kernel_size=5, stride=1, dilation=2, padding=1)),
+                    ('encoder_bn02', nn.BatchNorm1d(512)),
                     ('encoder_relu02', nn.ReLU()),
-                    ('encoder_conv03', nn.Conv1d(48, 48, kernel_size=3, stride=1, dilation=2, padding=1)),
-                    ('encoder_bn03', nn.BatchNorm1d(48)),
+                    ('encoder_conv03', nn.Conv1d(512, 512, kernel_size=3, stride=1, dilation=2, padding=1)),
+                    ('encoder_bn03', nn.BatchNorm1d(512)),
                     ('encoder_relu03', nn.ReLU()),
                 ]
             )
@@ -27,7 +27,7 @@ class DilatedCRNN(nn.Module):
         self.regression = nn.Sequential(
             collections.OrderedDict(
                 [
-                    ('regression_lstm01', nn.LSTM(input_size=48, hidden_size=128, num_layers=2, batch_first=True,
+                    ('regression_lstm01', nn.LSTM(input_size=512, hidden_size=128, num_layers=2, batch_first=True,
                                                   bidirectional=True)),
                 ]
             )
