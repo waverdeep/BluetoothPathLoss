@@ -51,6 +51,10 @@ def load_path_loss_with_detail_dataset(input_dir, model_type='CRNN', num_workers
             div_meter_pack.append(temp_pack[temp_pack[0] == key].to_numpy())
 
     for n_idx, pack in enumerate(div_meter_pack):
+        if len(pack) < 30:
+            temp = pack.tolist()
+            temp = temp * (int(30 / len(pack)) + 2)
+            pack = np.array(temp)
         for i in range(len(pack)-input_size):
             rnn_dataset.append(pack[i:i+input_size])
         # if various_input is True:
