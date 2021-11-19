@@ -1,5 +1,5 @@
 import math
-from data import data_loader
+from data import data_loader_normal
 import numpy as np
 from tool import metrics
 

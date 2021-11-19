@@ -1,7 +1,7 @@
 import math
 from itertools import combinations
 import time
-import model.model_pathloss as model_pathloss
+import model_pack.model_pathloss as model_pathloss
 
 
 class Point:
@@ -66,13 +66,20 @@ def get_trilateration(circles):
     size = len(circles)
     inner_points = []
     if size <= 2:
+        for point in get_intersecting_all_points(circles):
+            if is_contained_in_circles(point, circles):
+                inner_points.append(point)
+        for i in inner_points:
+            print("[{},{}] ".format(i.x, i.y))
         print('cannot calculate')
     elif size >= 3:
         for point in get_intersecting_all_points(circles):
             if is_contained_in_circles(point, circles):
                 inner_points.append(point)
-        if len(inner_points) == 0:
+        if len(inner_points) < 2:
             return "ld"
+        for i in inner_points:
+            print("[{},{}] ".format(i.x, i.y))
         center = get_center(inner_points)
         return center
     return "error"
@@ -98,12 +105,12 @@ model_configure = {"model": "CRNN", "criterion": "MSELoss","optimizer": "Adam","
 if __name__ == '__main__':
     start_time = time.time()
     circles = []
-    # circles.append(Circle(Point(0, 0), positioning.inference(model_configure,
-    #                                                               '../dataset/v5/test_point_00_15/fb-f8-c9-9d-d8-d6_37_0_15_pol1.csv')['median']))
-    # circles.append(Circle(Point(30, 0), positioning.inference(model_configure,
-    #                                                                '../dataset/v5/test_point_00_15/fb-f8-c9-9d-d8-d6_37_0_15_pol2.csv')['median']))
-    # circles.append(Circle(Point(0, 30), positioning.inference(model_configure,
-    #                                                                '../dataset/v5/test_point_00_15/fb-f8-c9-9d-d8-d6_37_0_15_pol3.csv')['median']))
+    circles.append(Circle(Point(0, 0), positioning.inference(model_configure,
+                                                                  '../dataset/v5/test_point_00_15/fb-f8-c9-9d-d8-d6_37_0_15_pol1.csv')['median']))
+    circles.append(Circle(Point(30, 0), positioning.inference(model_configure,
+                                                                   '../dataset/v5/test_point_00_15/fb-f8-c9-9d-d8-d6_37_0_15_pol2.csv')['median']))
+    circles.append(Circle(Point(0, 30), positioning.inference(model_configure,
+                                                                   '../dataset/v5/test_point_00_15/fb-f8-c9-9d-d8-d6_37_0_15_pol3.csv')['median']))
 
     circles.append(Circle(Point(0, 0), 15))
     circles.append(Circle(Point(30, 0), 15))

@@ -1,6 +1,5 @@
 import torch
 from model import model
-from data import data_loader
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
@@ -10,7 +9,7 @@ import tensorflow as tf
 import tensorboard as tb
 tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
 from tool import optimizer
-from data import data_preprocessing
+from old import data_preprocessing
 import json
 
 

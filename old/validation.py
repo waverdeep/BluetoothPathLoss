@@ -1,5 +1,5 @@
 import torch
-from data import data_loader
+from data import data_loader_normal
 import model
 from tool import metrics
 import time

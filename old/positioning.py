@@ -1,7 +1,7 @@
 import torch
 from model_pack import model
 import numpy as np
-from data import data_loader
+from data import data_loader_normal
 import random
 import time
 import math

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from model import model
-from data import data_loader
+from data import data_loader_normal
 import numpy as np
 import tensorflow as tf
 import tensorboard as tb
