@@ -98,8 +98,8 @@ class PathLossWithDetailInferenceDataset(Dataset):
         return cast_float_tensor(pick)
 
 
-def load_path_loss_with_detail_inference_dataset(input_filepath, model_type='RNN', num_workers=4, batch_size=128,
-                                                 shuffle=True, input_size=10):
+def load_path_loss_with_detail_inference_dataset(input_filepath, model_type='CRNN', num_workers=8, batch_size=8,
+                                                 shuffle=True, input_size=15):
     addition_dataset = []
     setup_dataset = None
     addition_dataset.append(pd.read_csv(input_filepath).to_numpy())
@@ -112,7 +112,7 @@ def load_path_loss_with_detail_inference_dataset(input_filepath, model_type='RNN
     elif model_type == 'RNN' or model_type == 'CRNN':
         rnn_dataset = []
         for pack in addition_dataset:
-            for idx in range((len(pack) - input_size)):
+            for idx in range((len(pack) - input_size+1)):
                 rnn_dataset.append(pack[idx: idx+input_size])
         rnn_dataset = np.array(rnn_dataset)
         setup_dataset = rnn_dataset
@@ -123,10 +123,11 @@ def load_path_loss_with_detail_inference_dataset(input_filepath, model_type='RNN
 
 if __name__ == '__main__':
     train_dataloader, test_dataloader, validation_dataloader = load_path_loss_with_detail_dataset(
-        '../dataset/v5/new', model_type='Custom_CRNN')
+        '../dataset/v8/type01_train', model_type='Custom_CRNN', batch_size=8)
     print('train_dataloader : ', len(train_dataloader))
     for data in train_dataloader:
-        print(data[:][0].shape)
+        for temp in data[:][0]:
+            print("dd", temp[:, 0])
         print(data[:][1].shape)
         break
 

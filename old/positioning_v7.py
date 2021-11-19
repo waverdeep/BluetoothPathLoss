@@ -1,7 +1,7 @@
 import torch
 from model_pack import model
 import numpy as np
-from data import data_loader
+from data import data_loader_normal
 import time
 import math
 from trilateration_booster_v1 import trilateration
@@ -67,8 +67,8 @@ if __name__ == '__main__':
 
 
     # ####### 45, 40 ########
-    pol5_data_path = 'dataset/v7_all/test1_point_c0-be-b0-c3-d6-3d_37_5_40/c0-be-b0-c3-d6-3d_37_5_40_pol0-60.csv'
-    pol6_data_path = 'dataset/v7_all/test1_point_c0-be-b0-c3-d6-3d_37_5_40/c0-be-b0-c3-d6-3d_37_5_40_pol50-60.csv'
+    pol5_data_path = '../dataset/v7_all/test1_point_c0-be-b0-c3-d6-3d_37_5_40/c0-be-b0-c3-d6-3d_37_5_40_pol0-60.csv'
+    pol6_data_path = '../dataset/v7_all/test1_point_c0-be-b0-c3-d6-3d_37_5_40/c0-be-b0-c3-d6-3d_37_5_40_pol50-60.csv'
     # pol6_data_path = 'dataset/v7_all/test1_point_f8-8a-5e-45-6c-b6_37_25_25/f8-8a-5e-45-6c-b6_37_25_25_pol50-60.csv'
     # pol6_data_path = 'dataset/v7_all/test1_point_04-ee-03-74-b0-30_38_30_30/04-ee-03-74-b0-30_38_30_30_pol50-60.csv'
 

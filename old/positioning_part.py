@@ -1,7 +1,7 @@
 import torch
 from model_pack import model
 import numpy as np
-from data import data_loader
+from data import data_loader_normal
 import time
 import math
 from trilateration_booster_v1 import trilateration

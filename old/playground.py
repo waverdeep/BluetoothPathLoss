@@ -1,6 +1,6 @@
 import torch
 from model_pack import model
-from data import data_loader
+from data import data_loader_normal
 import numpy as np
 import tool.optimizer as optimizer
 import json
@@ -221,7 +221,7 @@ def new_train(model_config, count, tb_writer_path, section_message):
 
 if __name__ == '__main__':
     start_type = 'quick_start' # 'quick_start'  # 'slow_start'
-    file_path = 'configurations/v6_v2_part4'
+    file_path = '../configurations/v6_v2_part4'
     checkpoint_dir = 'checkpoints/2021_10_13'
     writer_path = 'runs_2021_10_13'
     cuda_device = 'cuda:0'
