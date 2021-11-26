@@ -22,6 +22,7 @@ class PathLossWithDetailDataset(Dataset):
     def __init__(self, input_data,  model_type='CRNN', scaler_type='robust'):
         self.model_type = model_type
         self.dataset = input_data
+        self.scaler_type = scaler_type
         self.scaler = joblib.load('./data/{}_scaler.pkl'.format(scaler_type))
 
     def __len__(self):
@@ -31,7 +32,8 @@ class PathLossWithDetailDataset(Dataset):
         pick = self.dataset[idx]
         y_label = pick[0][0]
         x_data = np.delete(pick, 0, axis=1)
-        x_data = self.scaler.transform(x_data)
+        if self.scaler_type == 'robust':
+            x_data = self.scaler.transform(x_data)
         return cast_float_tensor(x_data), cast_float_tensor(y_label)
 
 
@@ -82,10 +84,12 @@ def load_path_loss_with_detail_dataset(input_dir, model_type="CRNN", num_workers
 
     train_data, valid_data, test_data = data_split(setup_dataset, shuffle=shuffle)
     pathloss_train_dataset = PathLossWithDetailDataset(input_data=train_data,
-                                                       model_type=model_type)
+                                                       model_type=model_type,
+                                                       scaler_type=scaler_type)
     pathloss_test_dataset = None
     pathloss_valid_dataset = PathLossWithDetailDataset(input_data=valid_data,
-                                                       model_type=model_type)
+                                                       model_type=model_type,
+                                                       scaler_type=scaler_type)
     pathloss_train_dataloader = DataLoader(pathloss_train_dataset, batch_size=batch_size, shuffle=shuffle,
                                            num_workers=num_workers)
     pathloss_test_dataloader = None
